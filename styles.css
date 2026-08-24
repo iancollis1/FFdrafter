@@ -19,9 +19,11 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-se
 .wrap{max-width:1180px;margin:0 auto;padding:24px 20px 60px;}
 h1{font-family:'Oswald',sans-serif;font-weight:600;font-size:26px;letter-spacing:0.5px;margin:0 0 2px;text-transform:uppercase;}
 .sub{color:var(--text-mute);font-size:13px;margin:0 0 20px;}
-.toprow{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:18px;}
+.toprow{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:10px;}
+.toprow-tools{display:flex;gap:8px;flex-wrap:wrap;}
 input[type=text]{background:var(--surface);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:9px 12px;font-size:14px;flex:1;min-width:180px;}
 input[type=text]:focus{outline:none;border-color:var(--blue);}
+.tabsrow{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
 .tabs{display:flex;gap:4px;background:var(--surface);padding:4px;border-radius:8px;flex-wrap:wrap;}
 .tab{font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:0.5px;text-transform:uppercase;padding:7px 14px;border-radius:6px;cursor:pointer;color:var(--text-mute);user-select:none;}
 .tab.active{background:var(--surface-2);color:var(--gold);}
@@ -66,7 +68,13 @@ input[type=text]:focus{outline:none;border-color:var(--blue);}
 .runalert{padding:8px 12px;margin-bottom:14px;border-radius:8px;background:var(--red-dim);border:1px solid var(--red);color:var(--red);font-family:'JetBrains Mono',monospace;font-size:12px;}
 .turnbanner{padding:8px 12px;margin-bottom:14px;border-radius:8px;background:var(--surface);border:1px solid var(--blue);color:var(--blue);font-family:'JetBrains Mono',monospace;font-size:12px;}
 .layout{display:grid;grid-template-columns:1fr 300px;gap:18px;}
-@media (max-width:820px){.layout{grid-template-columns:1fr;}}
+@media (max-width:820px){
+  .layout{grid-template-columns:1fr;}
+  /* Single-column: Pick Guidance is the highest-value thing to see when it's
+     your turn, so it goes above the (very long, unpaginated) player board
+     instead of being buried below hundreds of rows. */
+  .side{order:-1;}
+}
 .board{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;overflow-x:auto;}
 .row{display:grid;grid-template-columns:34px 1fr 74px 84px 78px 190px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--line);font-size:13px;gap:6px;}
 .row:last-child{border-bottom:none;}
@@ -99,3 +107,49 @@ input[type=text]:focus{outline:none;border-color:var(--blue);}
 .slotlabel{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-mute);width:44px;}
 .slotname{font-weight:500;flex:1;text-align:right;}
 .slotname.empty{color:var(--text-mute);font-weight:400;}
+
+.mini-label{display:none;}
+#radarSvg{width:100%;height:auto;aspect-ratio:2/1;display:block;}
+
+/* ---------------------------------------------------------------------
+   Phone layout. Board rows collapse from the fixed 6-column grid into a
+   stacked card (name on its own line, stats in a row, actions full-width);
+   the two tab bars become independently horizontal-scrollable strips
+   instead of wrapping into a wall of buttons above the board.
+   --------------------------------------------------------------------- */
+@media (max-width:640px){
+  .wrap{padding:14px 12px 40px;}
+  h1{font-size:21px;}
+
+  .toprow{flex-direction:column;align-items:stretch;}
+  .toprow-tools{justify-content:space-between;}
+  .toprow-tools > *{flex:1;text-align:center;}
+
+  .tabs,.modetabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .tabs::-webkit-scrollbar,.modetabs::-webkit-scrollbar{display:none;}
+  .tab,.modetab{flex:0 0 auto;}
+
+  .row.hdr{display:none;}
+  .row{
+    grid-template-columns:1fr 1fr 1fr;
+    grid-template-areas:
+      "name name name"
+      "fpts val survival"
+      "acts acts acts";
+    row-gap:8px;
+    padding:12px;
+  }
+  .cell-rank{display:none;}
+  .cell-name{grid-area:name;}
+  .cell-fpts{grid-area:fpts;}
+  .cell-val{grid-area:val;}
+  .cell-survival{grid-area:survival;}
+  .cell-acts{grid-area:acts;justify-content:stretch;}
+  .cell-fpts,.cell-val,.cell-survival{display:flex;flex-direction:column;gap:2px;}
+  .mini-label{display:block;font-size:9px;letter-spacing:0.4px;color:var(--text-mute);text-transform:uppercase;}
+
+  .cell-acts .teamsel{flex:1;max-width:none;}
+  .cell-acts .btn{flex:0 0 auto;padding:9px 14px;font-size:12px;}
+
+  .panel h2 select{max-width:55%;}
+}

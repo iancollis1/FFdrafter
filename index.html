@@ -16,6 +16,14 @@
 
   <div class="toprow">
     <input type="text" id="searchBox" placeholder="Search a player...">
+    <div class="toprow-tools">
+      <div class="toggle-btn" id="showDraftedToggle">Show Drafted</div>
+      <div class="toggle-btn" id="radarToggle">Risk Radar</div>
+      <div class="reset" id="resetBtn">Reset draft</div>
+    </div>
+  </div>
+
+  <div class="tabsrow">
     <div class="tabs" id="posTabs">
       <div class="tab" data-pos="ALL">All</div>
       <div class="tab" data-pos="QB">QB</div>
@@ -31,9 +39,6 @@
       <div class="modetab" data-mode="nextpick">Next Pick %</div>
       <div class="modetab" data-mode="takenow">Take-Now</div>
     </div>
-    <div class="toggle-btn" id="showDraftedToggle">Show Drafted</div>
-    <div class="toggle-btn" id="radarToggle">Risk Radar</div>
-    <div class="reset" id="resetBtn">Reset draft</div>
   </div>
 
   <div class="needbar" id="needBar"></div>
@@ -53,7 +58,7 @@
         <h2>Pick guidance</h2>
       </div>
       <div class="panel">
-        <h2>Rosters</h2>
+        <h2>Roster <select id="rosterTeamSelect" class="teamsel" style="float:right;"></select></h2>
         <div id="rosterPanel"></div>
       </div>
     </div>

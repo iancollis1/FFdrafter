@@ -741,12 +741,12 @@ function renderBoard() {
     const teamOptions = TEAMS.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
 
     html += `<div class="row${r.isDrafted ? ' drafted' : ''}" data-name="${p.name.replace(/"/g, '&quot;')}">
-      <div class="rank">${i + 1}</div>
-      <div class="name">${p.name}<span class="posbadge pb-${p.pos}">${p.pos}</span>${p.bye != null ? `<span class="byetag${byeConflict ? ' conflict' : ''}">bye ${p.bye}</span>` : ''}${flag}</div>
-      <div class="fpts">${p.fpts.toFixed(1)}</div>
-      <div class="val ${valField >= 0 ? 'pos' : 'neg'}">${valDisplay}</div>
-      <div class="fpts">${(r.survival * 100).toFixed(0)}%</div>
-      <div class="acts">
+      <div class="cell-rank rank">${i + 1}</div>
+      <div class="cell-name name">${p.name}<span class="posbadge pb-${p.pos}">${p.pos}</span>${p.bye != null ? `<span class="byetag${byeConflict ? ' conflict' : ''}">bye ${p.bye}</span>` : ''}${flag}</div>
+      <div class="cell-fpts fpts"><span class="mini-label">FPTS</span>${p.fpts.toFixed(1)}</div>
+      <div class="cell-val val ${valField >= 0 ? 'pos' : 'neg'}"><span class="mini-label">${activeValueLabel}</span>${valDisplay}</div>
+      <div class="cell-survival fpts"><span class="mini-label">SURV</span>${(r.survival * 100).toFixed(0)}%</div>
+      <div class="cell-acts acts">
         ${r.isDrafted
         ? `<span class="byetag">${TEAMS.find(t => t.id === r.draftedBy)?.name || r.draftedBy}</span><button class="btn undo" data-action="undo" data-name="${p.name.replace(/"/g, '&quot;')}">Undo</button>`
         : `<select class="teamsel" data-team-select="${p.name.replace(/"/g, '&quot;')}">${teamOptions}</select><button class="btn" data-action="draft" data-name="${p.name.replace(/"/g, '&quot;')}">Draft &rarr;</button>`}
@@ -761,19 +761,35 @@ function renderBoard() {
   });
 }
 
+function populateRosterTeamSelect() {
+  const sel = document.getElementById('rosterTeamSelect');
+  if (!sel || sel.options.length > 0) return; // populate once; value persists across renders
+  TEAMS.forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t.id;
+    opt.textContent = t.name;
+    sel.appendChild(opt);
+  });
+  sel.value = MY_TEAM;
+}
+
+// Shows one team's roster at a time (switchable via #rosterTeamSelect) instead
+// of stacking all 10 -- avoids a very long scroll on a phone.
 function renderRoster() {
   const el = document.getElementById('rosterPanel');
   if (!el) return;
-  const html = TEAMS.map(t => {
-    const picks = pickOrder.filter(p => p.by === t.id).map(p => playerByName(p.name)).filter(Boolean);
-    const slots = assignRosterSlots(picks);
-    const byeConflicts = findByeConflicts(slots);
-    const slotRows = slots.map(s =>
-      `<div class="slot"><span class="slotlabel">${s.slot}</span><span class="slotname${s.player ? '' : ' empty'}">${s.player ? `${s.player.name} (bye ${s.player.bye ?? '-'})` : '--'}</span></div>`
-    ).join('');
-    return `<div class="panel"><h2>${t.name}${byeConflicts.length ? ' <span class="byetag conflict">bye conflict</span>' : ''}</h2>${slotRows}</div>`;
-  }).join('');
-  el.innerHTML = html;
+  populateRosterTeamSelect();
+  const sel = document.getElementById('rosterTeamSelect');
+  const teamId = (sel && sel.value) || MY_TEAM;
+  const team = TEAMS.find(t => t.id === teamId) || TEAMS[0];
+
+  const picks = pickOrder.filter(p => p.by === team.id).map(p => playerByName(p.name)).filter(Boolean);
+  const slots = assignRosterSlots(picks);
+  const byeConflicts = findByeConflicts(slots);
+  const slotRows = slots.map(s =>
+    `<div class="slot"><span class="slotlabel">${s.slot}</span><span class="slotname${s.player ? '' : ' empty'}">${s.player ? `${s.player.name} (bye ${s.player.bye ?? '-'})` : '--'}</span></div>`
+  ).join('');
+  el.innerHTML = `<div class="panel">${byeConflicts.length ? `<div class="byetag conflict" style="margin-bottom:8px;">Bye-week conflict: ${byeConflicts.join(', ')}</div>` : ''}${slotRows}</div>`;
 }
 
 function assignRosterSlots(picks) {
@@ -937,6 +953,10 @@ function wireEvents() {
     } else if (btn.dataset.action === 'undo') {
       undraftPlayer(name);
     }
+  });
+
+  document.getElementById('rosterTeamSelect')?.addEventListener('change', () => {
+    renderRoster();
   });
 }
 
