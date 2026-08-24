@@ -25,11 +25,12 @@ describe('DOM-driven draft pick (real simulated events)', () => {
     const name = draftBtn.dataset.name;
     const countBefore = FF.getState().pickOrder.length;
 
+    const expectedTeam = FF.currentPicker(); // dropdown defaults to whoever's on the clock
     draftBtn.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
 
     const state = FF.getState();
     assert.equal(state.pickOrder.length, countBefore + 1);
-    assert.equal(state.drafted[name], FF.MY_TEAM);
+    assert.equal(state.drafted[name], expectedTeam);
 
     const stored = JSON.parse(window.localStorage.getItem('ff-draft-live-2026'));
     assert.equal(stored.pickOrder.length, countBefore + 1);
@@ -41,8 +42,9 @@ describe('DOM-driven draft pick (real simulated events)', () => {
 
     const firstRow = document.querySelector('#board .row:not(.hdr)');
     const name = firstRow.querySelector('button[data-action="draft"]').dataset.name;
+    const expectedTeam = FF.currentPicker();
     firstRow.querySelector('button[data-action="draft"]').dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
-    assert.equal(FF.getState().drafted[name], FF.MY_TEAM);
+    assert.equal(FF.getState().drafted[name], expectedTeam);
 
     // Drafted rows are hidden by default (Show Drafted is off) -- reveal them to find Undo.
     document.getElementById('showDraftedToggle').dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
@@ -54,6 +56,33 @@ describe('DOM-driven draft pick (real simulated events)', () => {
     assert.equal(FF.getState().drafted[name], undefined);
   });
 
+  test('the team-select dropdown defaults to whoever is on the clock, not always MY_TEAM', () => {
+    const { FF, document } = loadApp();
+    setupWithKeepers(FF);
+    // After 20 keepers, round 3 pick 1 (mmurphy2015) is on the clock, not IanCollis4.
+    assert.equal(FF.currentPicker(), 'mmurphy2015');
+
+    const firstRow = document.querySelector('#board .row:not(.hdr)');
+    const sel = firstRow.querySelector('[data-team-select]');
+    assert.equal(sel.value, 'mmurphy2015');
+  });
+
+  test('the team-select dropdown defaults to MY_TEAM when it actually is my turn', () => {
+    const { FF, document } = loadApp();
+    FF.setPlayers(loadFixturePlayers());
+    FF.setSleeperRank(loadFixtureSleeperRank());
+    // Build pickOrder up through the pick right before my round-3 turn.
+    const po = Array.from({ length: 28 }, (_, i) => ({ name: `p${i}`, by: FF.SNAKE_ORDER[i], isPreset: false }));
+    FF.setState({}, po);
+    assert.equal(FF.currentPicker(), FF.MY_TEAM);
+    FF.renderTabs();
+    FF.render();
+
+    const firstRow = document.querySelector('#board .row:not(.hdr)');
+    const sel = firstRow.querySelector('[data-team-select]');
+    assert.equal(sel.value, FF.MY_TEAM);
+  });
+
   test('clicking a position tab filters the board to that position', () => {
     const { FF, document, window } = loadApp();
     setupWithKeepers(FF);
@@ -63,6 +92,47 @@ describe('DOM-driven draft pick (real simulated events)', () => {
     const rows = Array.from(document.querySelectorAll('#board .row:not(.hdr)'));
     assert.ok(rows.length > 0);
     rows.forEach(r => assert.ok(r.querySelector('.pb-QB'), 'every row should be a QB after filtering'));
+  });
+});
+
+describe('Hide Kickers toggle', () => {
+  test('defaults on: K is filtered from the ALL view but still shows on the K tab', () => {
+    const { FF, document } = loadApp();
+    setupWithKeepers(FF);
+
+    assert.equal(FF.getState().hideKickers, true);
+    const allRows = Array.from(document.querySelectorAll('#board .row:not(.hdr)'));
+    assert.ok(allRows.length > 0);
+    assert.ok(!allRows.some(r => r.querySelector('.pb-K')), 'no kickers should render in the ALL view');
+
+    document.querySelector('#posTabs [data-pos="K"]').click();
+    const kRows = Array.from(document.querySelectorAll('#board .row:not(.hdr)'));
+    assert.ok(kRows.length > 0);
+    assert.ok(kRows.every(r => r.querySelector('.pb-K')), 'the K tab should still show kickers even while hideKickers is on');
+  });
+
+  test('a real click on the toggle shows kickers in the ALL view again, and persists the choice', () => {
+    const { FF, document, window } = loadApp();
+    setupWithKeepers(FF);
+
+    document.getElementById('hideKickersToggle').dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+    assert.equal(FF.getState().hideKickers, false);
+    const rows = Array.from(document.querySelectorAll('#board .row:not(.hdr)'));
+    assert.ok(rows.some(r => r.querySelector('.pb-K')), 'kickers should reappear in the ALL view once toggled off');
+
+    const stored = JSON.parse(window.localStorage.getItem('ff-draft-live-2026'));
+    assert.equal(stored.prefs.hideKickers, false);
+  });
+
+  test('loadState restores a persisted hideKickers=false choice; missing/older saved state defaults to true', () => {
+    const { FF, window } = loadApp();
+    window.localStorage.setItem('ff-draft-live-2026', JSON.stringify({ drafted: {}, pickOrder: [], prefs: { hideKickers: false } }));
+    FF.loadState();
+    assert.equal(FF.getState().hideKickers, false);
+
+    window.localStorage.setItem('ff-draft-live-2026', JSON.stringify({ drafted: {}, pickOrder: [] })); // no prefs at all
+    FF.loadState();
+    assert.equal(FF.getState().hideKickers, true);
   });
 });
 

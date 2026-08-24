@@ -182,6 +182,11 @@ let activeMode = 'league'; // league | mine | riskadj | nextpick | takenow
 let showDrafted = false;
 let searchQuery = '';
 let showRadar = false;
+// Defaults to on -- kickers clutter the ALL view long before they're a live
+// consideration. Persisted (unlike the other toggles) since it's a standing
+// preference, not a one-off view choice. The K tab itself is unaffected --
+// you can still browse kickers explicitly whenever you want.
+let hideKickers = true;
 
 // Cached per-render simulation output, recomputed only when the board state
 // (drafted/pickOrder) changes -- the Monte Carlo pass is too expensive to
@@ -200,6 +205,9 @@ function loadState() {
     const parsed = JSON.parse(raw);
     drafted = (parsed && typeof parsed.drafted === 'object' && parsed.drafted) || {};
     pickOrder = (parsed && Array.isArray(parsed.pickOrder)) ? parsed.pickOrder : [];
+    hideKickers = (parsed && parsed.prefs && typeof parsed.prefs.hideKickers === 'boolean')
+      ? parsed.prefs.hideKickers
+      : true; // missing/older saved state -- default on
   } catch (e) {
     drafted = {};
     pickOrder = [];
@@ -208,7 +216,7 @@ function loadState() {
 
 function saveState() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ drafted, pickOrder }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ drafted, pickOrder, prefs: { hideKickers } }));
   } catch (e) {
     // storage unavailable/full -- state simply won't persist this session
   }
@@ -551,7 +559,11 @@ function refreshSimCache() {
 function computeRows() {
   const { baselines, myCounts, survival, nextPick, positionReplacementAvg } = simCache;
   const pool = showDrafted ? PLAYERS : undraftedPlayers('ALL');
-  const byPos = activePosTab === 'ALL' ? pool : pool.filter(p => p.pos === activePosTab);
+  // hideKickers only ever filters the ALL view -- the K tab always shows
+  // kickers when explicitly selected, so they're still checkable on demand.
+  const byPos = activePosTab === 'ALL'
+    ? (hideKickers ? pool.filter(p => p.pos !== 'K') : pool)
+    : pool.filter(p => p.pos === activePosTab);
   const bySearch = searchQuery
     ? byPos.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
     : byPos;
@@ -756,8 +768,12 @@ function renderBoard() {
 
   el.innerHTML = html || `<div class="row" style="padding:16px;color:var(--text-mute);">No players match.</div>`;
 
+  // Defaults to whoever is actually on the clock -- most picks you log are
+  // for other teams, so this saves re-selecting the team on every single
+  // pick. Falls back to MY_TEAM once the draft is complete (no picker left).
+  const defaultTeam = currentPicker() ?? MY_TEAM;
   el.querySelectorAll('[data-team-select]').forEach(sel => {
-    sel.value = MY_TEAM;
+    sel.value = defaultTeam;
   });
 }
 
@@ -896,6 +912,9 @@ function renderTabs() {
       tab.classList.toggle('active', tab.dataset.mode === activeMode);
     });
   }
+  document.getElementById('showDraftedToggle')?.classList.toggle('on', showDrafted);
+  document.getElementById('radarToggle')?.classList.toggle('on', showRadar);
+  document.getElementById('hideKickersToggle')?.classList.toggle('on', hideKickers);
 }
 
 function wireEvents() {
@@ -929,6 +948,13 @@ function wireEvents() {
   document.getElementById('radarToggle')?.addEventListener('click', e => {
     showRadar = !showRadar;
     e.target.classList.toggle('on', showRadar);
+    render();
+  });
+
+  document.getElementById('hideKickersToggle')?.addEventListener('click', e => {
+    hideKickers = !hideKickers;
+    e.target.classList.toggle('on', hideKickers);
+    saveState();
     render();
   });
 
@@ -1015,8 +1041,9 @@ if (typeof window !== 'undefined') {
     setPlayers(players) { PLAYERS = players; PLAYER_BY_NAME = new Map(players.map(p => [p.name, p])); },
     setSleeperRank(rank) { SLEEPER_RANK = rank; },
     setSimRuns(n) { SIM_RUNS = n; }, // test-only override; production always uses the default 250
-    getState() { return { drafted, pickOrder }; },
+    getState() { return { drafted, pickOrder, hideKickers }; },
     setState(d, po) { drafted = d; pickOrder = po; simCache = null; },
+    setHideKickers(v) { hideKickers = v; },
   };
   window.addEventListener('DOMContentLoaded', init);
 }
