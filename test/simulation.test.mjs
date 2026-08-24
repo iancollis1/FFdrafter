@@ -90,7 +90,7 @@ describe('Monte Carlo survival/next-pick simulation', () => {
 });
 
 describe('seedLivePicks', () => {
-  test('bootstraps keepers + real live picks in order, leaving IanCollis4 on the clock at 9.9', () => {
+  test('bootstraps keepers + real live picks in order, leaving JCTorres97 on the clock at 12.9', () => {
     const { FF } = loadApp();
     FF.setPlayers(loadFixturePlayers());
     const drafted = {}, pickOrder = [];
@@ -102,10 +102,9 @@ describe('seedLivePicks', () => {
 
     const state = FF.getState();
     assert.equal(state.pickOrder.length, 20 + FF.LIVE_PICKS_SEED.length);
-    assert.equal(state.pickOrder.length, 88);
-    assert.equal(FF.currentPicker(), FF.MY_TEAM);
+    assert.equal(FF.currentPicker(), 'JCTorres97');
     assert.equal(state.drafted['Christian McCaffrey'], 'mmurphy2015'); // first round-3 pick
-    assert.equal(state.drafted['Mike Washington Jr.'], 'grwin15'); // last seeded pick (9.8)
+    assert.equal(state.drafted['Jakobi Meyers'], 'RJMess'); // last seeded pick (12.8)
     assert.equal(state.drafted['Jahmyr Gibbs'], 'Dillard09'); // untouched keeper
   });
 

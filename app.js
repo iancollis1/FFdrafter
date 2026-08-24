@@ -104,11 +104,31 @@ const LIVE_PICKS_SEED = [
   { name: 'Tony Pollard', team: 'TheDayDay69' }, { name: 'Jonathon Brooks', team: 'RJMess' },
   { name: 'Patrick Mahomes II', team: 'Alegre12' }, { name: 'Jordyn Tyson', team: 'RJMess' },
   { name: 'Courtland Sutton', team: 'JCTorres97' }, { name: 'J.K. Dobbins', team: 'mmurphy2015' },
-  // Round 9 (through pick 9.8 -- 9.9 IanCollis4 is on the clock, left undrafted)
+  // Round 9 (picks 9.1-9.8)
   { name: 'Dak Prescott', team: 'mmurphy2015' }, { name: 'Rico Dowdle', team: 'JCTorres97' },
   { name: 'Mark Andrews', team: 'RJMess' }, { name: 'Kyle Monangai', team: 'Alegre12' },
   { name: 'Jayden Daniels', team: 'LackDaddy10' }, { name: 'Michael Wilson', team: 'TheDayDay69' },
   { name: 'Alec Pierce', team: 'Dillard09' }, { name: 'Mike Washington Jr.', team: 'grwin15' },
+  // Round 9 (picks 9.9-9.10) -- these two only came with a pick slot + player,
+  // no team name, so the team is derived from SNAKE_ORDER for that slot.
+  { name: 'Tucker Kraft', team: 'IanCollis4' }, { name: 'Sam LaPorta', team: 'RedSled' },
+  // Round 10
+  { name: 'Makai Lemon', team: 'RedSled' }, { name: 'Caleb Williams', team: 'IanCollis4' },
+  { name: 'Jordan Addison', team: 'grwin15' }, { name: 'Jacory Croskey-Merritt', team: 'Dillard09' },
+  { name: 'Chris Godwin Jr.', team: 'TheDayDay69' }, { name: 'Michael Pittman Jr.', team: 'LackDaddy10' },
+  { name: 'Jordan Mason', team: 'Alegre12' }, { name: 'Quentin Johnston', team: 'RJMess' },
+  { name: 'Harold Fannin Jr.', team: 'JCTorres97' }, { name: 'George Kittle', team: 'mmurphy2015' },
+  // Round 11
+  { name: 'Blake Corum', team: 'mmurphy2015' }, { name: 'Jayden Reed', team: 'JCTorres97' },
+  { name: 'Rachaad White', team: 'RJMess' }, { name: 'Kenny Gainwell', team: 'Alegre12' },
+  { name: 'Josh Downs', team: 'LackDaddy10' }, { name: 'Aaron Jones Sr.', team: 'TheDayDay69' },
+  { name: "Wan'Dale Robinson", team: 'Dillard09' }, { name: 'Justin Herbert', team: 'grwin15' },
+  { name: 'Travis Kelce', team: 'IanCollis4' }, { name: 'KC Concepcion', team: 'RedSled' },
+  // Round 12 (through pick 12.8 -- 12.9 JCTorres97 is on the clock, left undrafted)
+  { name: 'Xavier Worthy', team: 'RedSled' }, { name: 'Stefon Diggs', team: 'IanCollis4' },
+  { name: 'Tyler Allgeier', team: 'grwin15' }, { name: 'Matthew Golden', team: 'Dillard09' },
+  { name: "De'Zhaun Stribling", team: 'TheDayDay69' }, { name: 'Brandon Aubrey', team: 'LackDaddy10' },
+  { name: 'Deebo Samuel Sr.', team: 'Alegre12' }, { name: 'Jakobi Meyers', team: 'RJMess' },
 ];
 
 const FRAGILITY_DISCOUNT = { RB: 0.065, WR: 0.02, QB: 0.02, TE: 0.03, K: 0.0 };

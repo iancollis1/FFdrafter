@@ -94,7 +94,7 @@ describe('Full draft-day end-to-end simulation', () => {
     const drafted = {}, pickOrder = [];
     FF.PRESET_KEEPERS.forEach(k => { drafted[k.name] = k.team; pickOrder.push({ name: k.name, by: k.team, isPreset: true }); });
     FF.setState(drafted, pickOrder);
-    FF.seedLivePicks(); // start from the real current draft state (88 picks in), not just keepers
+    FF.seedLivePicks(); // start from the real current draft state, not just keepers
 
     assert.doesNotThrow(() => FF.render());
 
