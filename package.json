@@ -1,0 +1,12 @@
+{
+  "name": "ffdrafter",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:players": "node scripts/build_players.mjs",
+    "test": "node --test test/"
+  },
+  "devDependencies": {
+    "jsdom": "^25.0.0"
+  }
+}

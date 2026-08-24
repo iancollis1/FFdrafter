@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FFdrafter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <h1>FFdrafter</h1>
+  <p class="sub">Value-based draft assistant &mdash; 10-team half-PPR keeper league</p>
+
+  <div class="toprow">
+    <input type="text" id="searchBox" placeholder="Search a player...">
+    <div class="tabs" id="posTabs">
+      <div class="tab" data-pos="ALL">All</div>
+      <div class="tab" data-pos="QB">QB</div>
+      <div class="tab" data-pos="RB">RB</div>
+      <div class="tab" data-pos="WR">WR</div>
+      <div class="tab" data-pos="TE">TE</div>
+      <div class="tab" data-pos="K">K</div>
+    </div>
+    <div class="modetabs" id="modeTabs">
+      <div class="modetab" data-mode="league">League</div>
+      <div class="modetab" data-mode="mine">Mine</div>
+      <div class="modetab" data-mode="riskadj">Risk-Adj</div>
+      <div class="modetab" data-mode="nextpick">Next Pick %</div>
+      <div class="modetab" data-mode="takenow">Take-Now</div>
+    </div>
+    <div class="toggle-btn" id="showDraftedToggle">Show Drafted</div>
+    <div class="toggle-btn" id="radarToggle">Risk Radar</div>
+    <div class="reset" id="resetBtn">Reset draft</div>
+  </div>
+
+  <div class="needbar" id="needBar"></div>
+  <div class="turnbanner" id="turnBanner"></div>
+  <div class="runalert" id="runAlert" style="display:none;"></div>
+
+  <div class="radarwrap" id="radarPanel" style="display:none;">
+    <h3>Risk Radar</h3>
+    <div class="radarsub">x = value in the active mode &middot; y = urgency (inverted survival%)</div>
+    <svg id="radarSvg" width="100%" height="320"></svg>
+  </div>
+
+  <div class="layout">
+    <div class="board" id="board"></div>
+    <div class="side">
+      <div class="panel" id="guidance">
+        <h2>Pick guidance</h2>
+      </div>
+      <div class="panel">
+        <h2>Rosters</h2>
+        <div id="rosterPanel"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
