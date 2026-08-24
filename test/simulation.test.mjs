@@ -89,6 +89,48 @@ describe('Monte Carlo survival/next-pick simulation', () => {
   });
 });
 
+describe('seedLivePicks', () => {
+  test('bootstraps keepers + real live picks in order, leaving IanCollis4 on the clock at 9.9', () => {
+    const { FF } = loadApp();
+    FF.setPlayers(loadFixturePlayers());
+    const drafted = {}, pickOrder = [];
+    FF.PRESET_KEEPERS.forEach(k => { drafted[k.name] = k.team; pickOrder.push({ name: k.name, by: k.team, isPreset: true }); });
+    FF.setState(drafted, pickOrder);
+
+    const changed = FF.seedLivePicks();
+    assert.equal(changed, true);
+
+    const state = FF.getState();
+    assert.equal(state.pickOrder.length, 20 + FF.LIVE_PICKS_SEED.length);
+    assert.equal(state.pickOrder.length, 88);
+    assert.equal(FF.currentPicker(), FF.MY_TEAM);
+    assert.equal(state.drafted['Christian McCaffrey'], 'mmurphy2015'); // first round-3 pick
+    assert.equal(state.drafted['Mike Washington Jr.'], 'grwin15'); // last seeded pick (9.8)
+    assert.equal(state.drafted['Jahmyr Gibbs'], 'Dillard09'); // untouched keeper
+  });
+
+  test('is idempotent -- running it twice does not duplicate picks', () => {
+    const { FF } = loadApp();
+    FF.setPlayers(loadFixturePlayers());
+    const drafted = {}, pickOrder = [];
+    FF.PRESET_KEEPERS.forEach(k => { drafted[k.name] = k.team; pickOrder.push({ name: k.name, by: k.team, isPreset: true }); });
+    FF.setState(drafted, pickOrder);
+
+    FF.seedLivePicks();
+    const lenAfterFirst = FF.getState().pickOrder.length;
+    const changedSecond = FF.seedLivePicks();
+    assert.equal(changedSecond, false);
+    assert.equal(FF.getState().pickOrder.length, lenAfterFirst);
+  });
+
+  test('every seeded live-pick name resolves to a real player in the pool', () => {
+    const { FF } = loadApp();
+    FF.setPlayers(loadFixturePlayers());
+    const byName = new Set(loadFixturePlayers().map(p => p.name));
+    FF.LIVE_PICKS_SEED.forEach(k => assert.ok(byName.has(k.name), `${k.name} not found in players.json`));
+  });
+});
+
 describe('reconcilePresetKeepers', () => {
   test('auto-drafts all 20 keepers from empty state', () => {
     const { FF } = loadApp();

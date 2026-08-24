@@ -46,6 +46,17 @@ computed values (need-zone multipliers, opponent boosts, Take-Now boundary
 cases, etc.), plus one full 170-pick draft-day simulation with zero thrown
 errors.
 
+## Known quirk: kickers late in a draft
+
+The demand-adjusted replacement baseline correctly reflects that once most
+teams already have a kicker, the effective replacement pool shrinks -- which
+can make a K's League/My Value (and therefore Take-Now/Next-Pick) look
+inflated relative to skill positions, even though nobody should draft a
+kicker that early. This is expected, not a bug. Kickers are excluded from
+the Pick Guidance cards and the Risk Radar (both are "what should I actually
+take" recommendation surfaces); the sortable board itself still shows K's
+real numbers when you filter to the K tab or sort by any mode.
+
 ## Deploying to GitHub Pages
 
 Settings -> Pages -> Deploy from a branch -> select this branch, folder

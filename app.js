@@ -61,6 +61,56 @@ const PRESET_KEEPERS = [
   { name: 'Omarion Hampton', team: 'IanCollis4' },
 ];
 
+// Real live picks already made in the draft as of this build, in the exact
+// order they happened (rounds 3 through 9.8) -- ported over from the
+// in-progress draft so the tool boots straight into the current state
+// instead of an empty board. Bootstrapped once via seedLivePicks() below;
+// "Reset draft" intentionally does NOT re-apply this (a reset should mean a
+// true reset back to just the keepers).
+const LIVE_PICKS_SEED = [
+  // Round 3
+  { name: 'Christian McCaffrey', team: 'mmurphy2015' }, { name: 'A.J. Brown', team: 'JCTorres97' },
+  { name: 'Kenneth Walker III', team: 'RJMess' }, { name: 'Brock Bowers', team: 'Alegre12' },
+  { name: 'Nico Collins', team: 'LackDaddy10' }, { name: 'Trey McBride', team: 'TheDayDay69' },
+  { name: 'Rashee Rice', team: 'Dillard09' }, { name: 'Jeremiyah Love', team: 'grwin15' },
+  { name: 'Javonte Williams', team: 'IanCollis4' }, { name: 'Josh Jacobs', team: 'RedSled' },
+  // Round 4
+  { name: 'Chris Olave', team: 'RedSled' }, { name: 'Breece Hall', team: 'IanCollis4' },
+  { name: 'George Pickens', team: 'grwin15' }, { name: 'Tetairoa McMillan', team: 'Dillard09' },
+  { name: 'Travis Etienne Jr.', team: 'TheDayDay69' }, { name: 'DeVonta Smith', team: 'LackDaddy10' },
+  { name: 'Zay Flowers', team: 'Alegre12' }, { name: 'Tee Higgins', team: 'RJMess' },
+  { name: 'Lamar Jackson', team: 'JCTorres97' }, { name: 'Cam Skattebo', team: 'mmurphy2015' },
+  // Round 5
+  { name: 'Quinshon Judkins', team: 'mmurphy2015' }, { name: 'Emeka Egbuka', team: 'JCTorres97' },
+  { name: 'Colston Loveland', team: 'RJMess' }, { name: 'Ladd McConkey', team: 'Alegre12' },
+  { name: "D'Andre Swift", team: 'LackDaddy10' }, { name: 'David Montgomery', team: 'TheDayDay69' },
+  { name: 'Jaylen Waddle', team: 'Dillard09' }, { name: 'Bucky Irving', team: 'grwin15' },
+  { name: 'Garrett Wilson', team: 'IanCollis4' }, { name: 'Terry McLaurin', team: 'RedSled' },
+  // Round 6
+  { name: 'Joe Burrow', team: 'RedSled' }, { name: 'DJ Moore', team: 'IanCollis4' },
+  { name: 'Bhayshul Tuten', team: 'grwin15' }, { name: 'Tyler Warren', team: 'Dillard09' },
+  { name: 'Jadarian Price', team: 'TheDayDay69' }, { name: 'Jameson Williams', team: 'LackDaddy10' },
+  { name: 'Christian Watson', team: 'Alegre12' }, { name: 'Luther Burden III', team: 'RJMess' },
+  { name: 'Mike Evans', team: 'JCTorres97' }, { name: 'Brian Thomas Jr.', team: 'mmurphy2015' },
+  // Round 7
+  { name: 'Rome Odunze', team: 'mmurphy2015' }, { name: 'Jaylen Warren', team: 'JCTorres97' },
+  { name: 'TreVeyon Henderson', team: 'RJMess' }, { name: 'Davante Adams', team: 'Alegre12' },
+  { name: 'Carnell Tate', team: 'LackDaddy10' }, { name: 'Parker Washington', team: 'TheDayDay69' },
+  { name: 'Drake Maye', team: 'Dillard09' }, { name: 'Kyle Pitts Sr.', team: 'grwin15' },
+  { name: 'Marvin Harrison Jr.', team: 'IanCollis4' }, { name: 'Chuba Hubbard', team: 'RedSled' },
+  // Round 8
+  { name: 'DK Metcalf', team: 'RedSled' }, { name: 'Jalen Hurts', team: 'TheDayDay69' },
+  { name: 'Rhamondre Stevenson', team: 'grwin15' }, { name: 'RJ Harvey', team: 'Dillard09' },
+  { name: 'Tony Pollard', team: 'TheDayDay69' }, { name: 'Jonathon Brooks', team: 'RJMess' },
+  { name: 'Patrick Mahomes II', team: 'Alegre12' }, { name: 'Jordyn Tyson', team: 'RJMess' },
+  { name: 'Courtland Sutton', team: 'JCTorres97' }, { name: 'J.K. Dobbins', team: 'mmurphy2015' },
+  // Round 9 (through pick 9.8 -- 9.9 IanCollis4 is on the clock, left undrafted)
+  { name: 'Dak Prescott', team: 'mmurphy2015' }, { name: 'Rico Dowdle', team: 'JCTorres97' },
+  { name: 'Mark Andrews', team: 'RJMess' }, { name: 'Kyle Monangai', team: 'Alegre12' },
+  { name: 'Jayden Daniels', team: 'LackDaddy10' }, { name: 'Michael Wilson', team: 'TheDayDay69' },
+  { name: 'Alec Pierce', team: 'Dillard09' }, { name: 'Mike Washington Jr.', team: 'grwin15' },
+];
+
 const FRAGILITY_DISCOUNT = { RB: 0.065, WR: 0.02, QB: 0.02, TE: 0.03, K: 0.0 };
 
 // Per-team tendency leans, from multi-year real draft-history review (a lean is
@@ -177,6 +227,22 @@ function reconcilePresetKeepers() {
     }
   });
 
+  return changed;
+}
+
+// Bootstraps the real live picks already made (LIVE_PICKS_SEED) into state,
+// idempotently -- only adds a pick if that player isn't already drafted.
+// Distinct from reconcilePresetKeepers(): these are real isPreset:false
+// picks, never removed or re-checked against a changing source list.
+function seedLivePicks() {
+  let changed = false;
+  LIVE_PICKS_SEED.forEach(k => {
+    if (!drafted[k.name]) {
+      drafted[k.name] = k.team;
+      pickOrder.push({ name: k.name, by: k.team, isPreset: false });
+      changed = true;
+    }
+  });
   return changed;
 }
 
@@ -578,7 +644,12 @@ function renderGuidance() {
   if (!el) return;
   const picker = currentPicker();
   const { baselines, myCounts, survival, nextPick, positionReplacementAvg } = simCache;
-  const pool = undraftedPlayers('ALL').map(p => {
+  // Kickers are excluded from these recommendation cards: the demand-adjusted
+  // baseline correctly reflects that most teams already have a kicker, which
+  // shrinks the effective replacement pool and can make a K's Take-Now/Next-Pick
+  // numbers look inflated despite being strategically irrelevant this early
+  // (documented, expected quirk -- see README).
+  const pool = undraftedPlayers('ALL').filter(p => p.pos !== 'K').map(p => {
     const mv = myValue(p, baselines, myCounts);
     return { player: p, myValue: mv, survival: survival.get(p.name) ?? 1, nextPickPct: nextPick.get(p.name) ?? 0 };
   });
@@ -719,7 +790,8 @@ function renderRadar() {
   const svg = document.getElementById('radarSvg');
   if (!svg) return;
   const { baselines, myCounts, survival } = simCache;
-  const pool = undraftedPlayers('ALL').map(p => ({
+  // Same K exclusion as renderGuidance() -- see the comment there.
+  const pool = undraftedPlayers('ALL').filter(p => p.pos !== 'K').map(p => ({
     player: p,
     myValue: myValue(p, baselines, myCounts),
     survival: survival.get(p.name) ?? 1,
@@ -873,6 +945,7 @@ async function init() {
       const changed = reconcilePresetKeepers();
       if (changed) saveState();
     }
+    if (seedLivePicks()) saveState();
     renderTabs();
     render();
     wireEvents();
@@ -891,12 +964,12 @@ async function init() {
 if (typeof window !== 'undefined') {
   window.FF = {
     MY_TEAM, TEAMS, DRAFT_ORDER, TOTAL_ROUNDS, ROUND8_PICK_TRADES, SNAKE_ORDER, ROSTER_SLOTS,
-    PRESET_KEEPERS, FRAGILITY_DISCOUNT, TEAM_LEAN, GENERIC_MAX, GENERIC_MIN, MY_SINGLE_SLOT, FLEX_MIN,
+    PRESET_KEEPERS, LIVE_PICKS_SEED, FRAGILITY_DISCOUNT, TEAM_LEAN, GENERIC_MAX, GENERIC_MIN, MY_SINGLE_SLOT, FLEX_MIN,
     needState, mySingleSlotNeedState, myNeedMult, teamNeedMult, leagueValueWeight,
     leagueValue, myValue, riskAdjValue, takeNowScore,
     remainingFlexSharedN, teamsStillNeeding, positionN, computeBaselines,
     teamPositionCounts, undraftedPlayers, playerByName,
-    reconcilePresetKeepers, loadState, saveState, draftPlayer, undraftPlayer,
+    reconcilePresetKeepers, seedLivePicks, loadState, saveState, draftPlayer, undraftPlayer,
     runSimulation, refreshSimCache, computeRows, pickWindowTeams, currentPicker,
     assignRosterSlots, findByeConflicts, init, render, wireEvents, renderTabs,
     setPlayers(players) { PLAYERS = players; PLAYER_BY_NAME = new Map(players.map(p => [p.name, p])); },
