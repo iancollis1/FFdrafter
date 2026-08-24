@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Draft Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#14171C;
+  --surface:#1C2129;
+  --surface-2:#242A34;
+  --line:#2E3542;
+  --text:#EDEFF2;
+  --text-mute:#8A93A3;
+  --gold:#E8B04B;
+  --gold-dim:#3A2F1C;
+  --green:#5FBF77;
+  --green-dim:#1B2B20;
+  --red:#C75450;
+  --red-dim:#2E1E1D;
+  --blue:#5C8AD6;
+  --purple:#B79DE8;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;}
+.wrap{max-width:1180px;margin:0 auto;padding:24px 20px 60px;}
+h1{font-family:'Oswald',sans-serif;font-weight:600;font-size:26px;letter-spacing:0.5px;margin:0 0 2px;text-transform:uppercase;}
+.sub{color:var(--text-mute);font-size:13px;margin:0 0 20px;}
+.toprow{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:18px;}
+input[type=text]{background:var(--surface);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:9px 12px;font-size:14px;flex:1;min-width:180px;}
+input[type=text]:focus{outline:none;border-color:var(--blue);}
+.tabs{display:flex;gap:4px;background:var(--surface);padding:4px;border-radius:8px;}
+.tab{font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:0.5px;text-transform:uppercase;padding:7px 14px;border-radius:6px;cursor:pointer;color:var(--text-mute);user-select:none;}
+.tab.active{background:var(--surface-2);color:var(--gold);}
+.reset{margin-left:auto;font-size:12px;color:var(--text-mute);cursor:pointer;border:1px solid var(--line);padding:8px 12px;border-radius:6px;}
+.toggle-btn{font-size:12px;color:var(--text-mute);cursor:pointer;border:1px solid var(--line);padding:8px 12px;border-radius:6px;user-select:none;white-space:nowrap;}
+.toggle-btn.on{color:var(--red);border-color:var(--red);background:var(--red-dim);}
+.radarwrap{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:18px;}
+.radarwrap h3{font-family:'Oswald',sans-serif;font-size:14px;letter-spacing:0.5px;text-transform:uppercase;margin:0 0 4px;color:var(--gold);}
+.radarwrap .radarsub{font-size:11px;color:var(--text-mute);margin-bottom:10px;}
+.radar-dot{cursor:pointer;transition:r 0.1s;}
+.radar-dot:hover{stroke:var(--text);stroke-width:2;}
+.radar-label{font-family:'JetBrains Mono',monospace;font-size:9px;fill:var(--text-mute);pointer-events:none;}
+.radar-quadrant-label{font-family:'Oswald',sans-serif;font-size:11px;letter-spacing:0.5px;text-transform:uppercase;fill:var(--text-mute);opacity:0.6;}
+.reset:hover{border-color:var(--red);color:var(--red);}
+.modetabs{display:flex;gap:4px;background:var(--surface);padding:4px;border-radius:8px;}
+.modetab{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:0.4px;text-transform:uppercase;padding:7px 12px;border-radius:6px;cursor:pointer;color:var(--text-mute);user-select:none;font-weight:500;transition:color 0.15s, background 0.15s;}
+.modetab.active{background:var(--surface-2);font-weight:700;}
+.modetab.active[data-mode="league"]{color:var(--gold);}
+.modetab.active[data-mode="mine"]{color:var(--green);}
+.modetab.active[data-mode="nextpick"]{color:var(--blue);}
+.modetab.active[data-mode="takenow"]{color:var(--purple);}
+.modetab.active[data-mode="riskadj"]{color:var(--red);}
+.needbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:12px;}
+.needchip{padding:6px 10px;border-radius:6px;border:1px solid var(--line);background:var(--surface);}
+.needchip .tag{color:var(--text-mute);margin-right:6px;}
+.needchip.urgent{border-color:var(--gold);color:var(--gold);}
+.needchip.neutral{border-color:var(--line);color:var(--text);}
+.rec{padding:10px;border-radius:8px;margin-bottom:8px;border:1px solid var(--line);}
+.rec.main{background:var(--gold-dim);border-color:var(--gold);}
+.rec .rectag{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.4px;color:var(--gold);margin-bottom:3px;}
+.rec.main .rectag{color:var(--gold);}
+.rec:not(.main) .rectag{color:var(--text-mute);}
+.rec .recname{font-weight:600;font-size:14px;}
+.rec .recwhy{font-size:11px;color:var(--text-mute);margin-top:2px;}
+.rec .recval{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold);float:right;}
+.byetag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-mute);margin-left:6px;}
+.byetag.conflict{color:var(--red);font-weight:600;}
+.flagtag{font-size:10px;padding:1px 5px;border-radius:4px;margin-left:4px;font-family:'JetBrains Mono',monospace;}
+.flagtag.risk{background:var(--red-dim);color:var(--red);}
+.flagtag.opportunity{background:var(--green-dim);color:var(--green);}
+.tierbreak{padding:4px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--blue);background:#16202e;border-bottom:1px solid var(--line);letter-spacing:0.4px;text-align:center;}
+.runalert{padding:8px 12px;margin-bottom:14px;border-radius:8px;background:var(--red-dim);border:1px solid var(--red);color:var(--red);font-family:'JetBrains Mono',monospace;font-size:12px;}
+.turnbanner{padding:8px 12px;margin-bottom:14px;border-radius:8px;background:var(--surface);border:1px solid var(--blue);color:var(--blue);font-family:'JetBrains Mono',monospace;font-size:12px;}
+.layout{display:grid;grid-template-columns:1fr 300px;gap:18px;}
+@media (max-width:820px){.layout{grid-template-columns:1fr;}}
+.board{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+.row{display:grid;grid-template-columns:34px 1fr 74px 64px 78px 130px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--line);font-size:13px;}
+.row:last-child{border-bottom:none;}
+.row.hdr{color:var(--text-mute);font-size:11px;text-transform:uppercase;letter-spacing:0.4px;font-family:'JetBrains Mono',monospace;background:var(--surface-2);}
+.row.drafted{opacity:0.35;}
+.row.drafted .name{text-decoration:line-through;}
+.rank{font-family:'JetBrains Mono',monospace;color:var(--text-mute);}
+.name{font-weight:500;}
+.posbadge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 6px;border-radius:4px;margin-left:8px;vertical-align:1px;}
+.pb-QB{background:#2B2140;color:#B79DE8;}
+.pb-RB{background:var(--green-dim);color:var(--green);}
+.pb-WR{background:#1D2C3D;color:var(--blue);}
+.pb-TE{background:var(--gold-dim);color:var(--gold);}
+.pb-K{background:var(--surface-2);color:var(--text-mute);}
+.fpts{font-family:'JetBrains Mono',monospace;color:var(--text-mute);}
+.val{font-family:'JetBrains Mono',monospace;font-weight:600;}
+.val.pos{color:var(--gold);}
+.val.neg{color:var(--text-mute);}
+.acts{display:flex;gap:6px;justify-content:flex-end;}
+.btn{font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid var(--line);background:transparent;color:var(--text);padding:5px 8px;border-radius:5px;cursor:pointer;}
+.btn:hover{border-color:var(--gold);color:var(--gold);}
+.btn.undo{color:var(--text-mute);}
+.teamsel{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--surface-2);color:var(--text);border:1px solid var(--line);border-radius:5px;padding:5px 6px;max-width:120px;}
+.teamsel:focus{outline:none;border-color:var(--gold);}
+.repline{padding:6px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);background:var(--gold-dim);border-bottom:1px solid var(--line);letter-spacing:0.4px;}
+.side{display:flex;flex-direction:column;gap:14px;}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;}
+.panel h2{font-family:'Oswald',sans-serif;font-size:14px;letter-spacing:0.5px;text-transform:uppercase;margin:0 0 10px;color:var(--text-mute);}
+.slot{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px;}
+.slot:last-child{border-bottom:none;}
+.slotlabel{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-mute);width:44px;}
+.slotname{font-weight:500;flex:1;text-align:right;}
+.slotname.empty{color:var(--text-mute);font-weight:400;}
+.feeditem{font-size:12px;padding:6px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:8px;}
+.feeditem:last-child{border-bottom:none;}
+.feedwho{font-family:'JetBrains Mono',monospace;font-size:10px;padding:1px 6px;border-radius:4px;}
+.feedwho.mine{background:var(--green-dim);color:var(--green);}
+.feedwho.opp{background:var(--red-dim);color:var(--red);}
+.empty-feed{color:var(--text-mute);font-size:12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Draft board <span style="color:var(--red);font-size:14px;vertical-align:middle;">[BUILD v-qbte-fix-22Aug]</span></h1>
+  <p class="sub" id="subtitle">Loading pool...</p>
+  <div class="toprow">
+    <input type="text" id="search" placeholder="Search a player...">
+    <div class="tabs" id="tabs"></div>
+    <div class="modetabs" id="modeTabs"></div>
+    <div class="toggle-btn" id="draftedToggle">Show Drafted</div>
+    <div class="toggle-btn" id="radarToggle">Risk Radar</div>
+    <div class="reset" id="resetBtn">Reset draft</div>
+  </div>
+  <div class="needbar" id="needBar"></div>
+  <div id="turnBanner"></div>
+  <div id="runAlert"></div>
+  <div id="radarPanel" style="display:none;"></div>
+  <div class="layout">
+    <div class="board" id="board"></div>
+    <div class="side">
+      <div class="panel">
+        <h2>Pick guidance</h2>
+        <div id="recPanel"></div>
+      </div>
+      <div class="panel">
+        <h2>Team roster <select id="rosterTeamSelect" style="float:right;background:var(--surface-2);color:var(--text);border:1px solid var(--line);border-radius:5px;font-size:11px;padding:2px 4px;"></select></h2>
+        <div id="roster"></div>
+      </div>
+      <div class="panel">
+        <h2>Recent picks</h2>
+        <div id="feed"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const PLAYERS = [{"name": "Brock Bowers", "pos": "TE", "fpts": 199.9, "trueFpts": 195.6, "high": 250.5, "low": 190.0, "team": "LV", "bye": 13}, {"name": "Trey McBride", "pos": "TE", "fpts": 195.6, "trueFpts": 199.9, "high": 253.4, "low": 188.7, "team": "ARI", "bye": 14}, {"name": "Colston Loveland", "pos": "TE", "fpts": 171.9, "trueFpts": 171.9, "high": 196.7, "low": 165.2, "team": "CHI", "bye": 10}, {"name": "Tyler Warren", "pos": "TE", "fpts": 160.8, "trueFpts": 160.8, "high": 194.1, "low": 164.0, "team": "IND", "bye": 13}, {"name": "Tucker Kraft", "pos": "TE", "fpts": 156.0, "trueFpts": 145.3, "high": 162.1, "low": 134.0, "team": "GB", "bye": 11}, {"name": "Harold Fannin Jr.", "pos": "TE", "fpts": 151.5, "trueFpts": 151.5, "high": 187.8, "low": 143.4, "team": "CLE", "bye": 11}, {"name": "Kyle Pitts Sr.", "pos": "TE", "fpts": 148.9, "trueFpts": 156.0, "high": 187.3, "low": 144.4, "team": "ATL", "bye": 11}, {"name": "Sam LaPorta", "pos": "TE", "fpts": 146.7, "trueFpts": 148.9, "high": 170.2, "low": 145.6, "team": "DET", "bye": 6}, {"name": "George Kittle", "pos": "TE", "fpts": 145.3, "trueFpts": 142.5, "high": 157.1, "low": 140.4, "team": "SF", "bye": 8}, {"name": "Travis Kelce", "pos": "TE", "fpts": 144.4, "trueFpts": 144.4, "high": 175.1, "low": 140.7, "team": "KC", "bye": 5}, {"name": "Dallas Goedert", "pos": "TE", "fpts": 142.5, "trueFpts": 146.7, "high": 168.8, "low": 139.1, "team": "PHI", "bye": 10}, {"name": "Dalton Kincaid", "pos": "TE", "fpts": 133.8, "trueFpts": 131.7, "high": 149.0, "low": 124.9, "team": "BUF", "bye": 7}, {"name": "Mark Andrews", "pos": "TE", "fpts": 133.1, "trueFpts": 133.1, "high": 160.0, "low": 137.0, "team": "BAL", "bye": 13}, {"name": "Jake Ferguson", "pos": "TE", "fpts": 131.7, "trueFpts": 130.6, "high": 161.0, "low": 130.0, "team": "DAL", "bye": 14}, {"name": "Isaiah Likely", "pos": "TE", "fpts": 130.6, "trueFpts": 133.8, "high": 150.4, "low": 124.1, "team": "NYG", "bye": 8}, {"name": "Hunter Henry", "pos": "TE", "fpts": 122.5, "trueFpts": 122.5, "high": 147.7, "low": 118.8, "team": "NE", "bye": 11}, {"name": "Juwan Johnson", "pos": "TE", "fpts": 122.0, "trueFpts": 122.0, "high": 148.0, "low": 111.7, "team": "NO", "bye": 8}, {"name": "Brenton Strange", "pos": "TE", "fpts": 121.7, "trueFpts": 121.7, "high": 136.6, "low": 113.2, "team": "JAC", "bye": 7}, {"name": "Dalton Schultz", "pos": "TE", "fpts": 115.6, "trueFpts": 115.6, "high": 149.0, "low": 106.7, "team": "HOU", "bye": 8}, {"name": "Chig Okonkwo", "pos": "TE", "fpts": 108.7, "trueFpts": 99.8, "high": 123.3, "low": 96.4, "team": "WAS", "bye": 7}, {"name": "Oronde Gadsden II", "pos": "TE", "fpts": 107.6, "trueFpts": 96.7, "high": 118.8, "low": 87.0, "team": "LAC", "bye": 7}, {"name": "AJ Barner", "pos": "TE", "fpts": 106.3, "trueFpts": 100.1, "high": 125.7, "low": 93.4, "team": "SEA", "bye": 11}, {"name": "Terrance Ferguson", "pos": "TE", "fpts": 104.6, "trueFpts": 98.8, "high": 108.6, "low": 94.7, "team": "LAR", "bye": 11}, {"name": "T.J. Hockenson", "pos": "TE", "fpts": 101.5, "trueFpts": 108.7, "high": 136.2, "low": 99.9, "team": "MIN", "bye": 6}, {"name": "Pat Freiermuth", "pos": "TE", "fpts": 100.1, "trueFpts": 107.6, "high": 139.6, "low": 100.5, "team": "PIT", "bye": 9}, {"name": "Kenyon Sadiq", "pos": "TE", "fpts": 99.8, "trueFpts": 104.6, "high": 120.7, "low": 102.5, "team": "NYJ", "bye": 13}, {"name": "Cade Otton", "pos": "TE", "fpts": 98.8, "trueFpts": 101.5, "high": 124.4, "low": 85.2, "team": "TB", "bye": 10}, {"name": "Gunnar Helm", "pos": "TE", "fpts": 96.7, "trueFpts": 87.0, "high": 110.5, "low": 72.5, "team": "TEN", "bye": 9}, {"name": "Greg Dulcich", "pos": "TE", "fpts": 91.1, "trueFpts": 106.3, "high": 138.9, "low": 94.7, "team": "MIA", "bye": 6}, {"name": "Colby Parkinson", "pos": "TE", "fpts": 90.3, "trueFpts": 72.5, "high": 85.5, "low": 57.1, "team": "LAR", "bye": 11}, {"name": "David Njoku", "pos": "TE", "fpts": 88.8, "trueFpts": 73.1, "high": 85.3, "low": 63.9, "team": "LAC", "bye": 7}, {"name": "Mike Gesicki", "pos": "TE", "fpts": 87.0, "trueFpts": 91.1, "high": 112.5, "low": 86.0, "team": "CIN", "bye": 6}, {"name": "Theo Johnson", "pos": "TE", "fpts": 75.5, "trueFpts": 62.2, "high": 73.8, "low": 50.2, "team": "NYG", "bye": 8}, {"name": "Evan Engram", "pos": "TE", "fpts": 73.1, "trueFpts": 90.3, "high": 121.6, "low": 83.7, "team": "DEN", "bye": 10}, {"name": "Mason Taylor", "pos": "TE", "fpts": 72.5, "trueFpts": 75.5, "high": 107.4, "low": 52.2, "team": "NYJ", "bye": 13}, {"name": "Darnell Washington", "pos": "TE", "fpts": 70.1, "trueFpts": 58.7, "high": 70.2, "low": 55.3, "team": "PIT", "bye": 9}, {"name": "Jake Tonges", "pos": "TE", "fpts": 64.9, "trueFpts": 33.1, "high": 59.4, "low": 18.4, "team": "SF", "bye": 8}, {"name": "Eli Stowers", "pos": "TE", "fpts": 62.2, "trueFpts": 39.1, "high": 42.4, "low": 28.7, "team": "PHI", "bye": 10}, {"name": "Tyler Higbee", "pos": "TE", "fpts": 58.7, "trueFpts": 58.1, "high": 78.0, "low": 35.9, "team": "LAR", "bye": 11}, {"name": "Charlie Kolar", "pos": "TE", "fpts": 58.1, "trueFpts": 45.3, "high": 58.1, "low": 31.6, "team": "LAC", "bye": 7}, {"name": "Oscar Delp", "pos": "TE", "fpts": 53.8, "trueFpts": 7.0, "high": 7.0, "low": 7.0, "team": "NO", "bye": 8}, {"name": "Michael Mayer", "pos": "TE", "fpts": 50.6, "trueFpts": 70.1, "high": 101.5, "low": 59.0, "team": "LV", "bye": 13}, {"name": "Cole Kmet", "pos": "TE", "fpts": 48.6, "trueFpts": 53.8, "high": 86.0, "low": 40.1, "team": "CHI", "bye": 10}, {"name": "Dawson Knox", "pos": "TE", "fpts": 46.6, "trueFpts": 64.9, "high": 78.2, "low": 57.7, "team": "BUF", "bye": 7}, {"name": "Elijah Arroyo", "pos": "TE", "fpts": 45.5, "trueFpts": 46.6, "high": 56.9, "low": 48.3, "team": "SEA", "bye": 11}, {"name": "Noah Gray", "pos": "TE", "fpts": 45.3, "trueFpts": 40.4, "high": 56.9, "low": 22.5, "team": "KC", "bye": 5}, {"name": "Erick All Jr.", "pos": "TE", "fpts": 44.4, "trueFpts": 45.5, "high": 46.1, "low": 35.9, "team": "CIN", "bye": 6}, {"name": "Justin Joly", "pos": "TE", "fpts": 42.8, "trueFpts": 7.5, "high": 7.6, "low": 7.6, "team": "DEN", "bye": 10}, {"name": "Max Klare", "pos": "TE", "fpts": 42.2, "trueFpts": 16.1, "high": 14.8, "low": 9.7, "team": "LAR", "bye": 11}, {"name": "Noah Fant", "pos": "TE", "fpts": 41.3, "trueFpts": 50.6, "high": 66.2, "low": 38.9, "team": "NO", "bye": 8}, {"name": "Ja'Tavion Sanders", "pos": "TE", "fpts": 40.4, "trueFpts": 31.5, "high": 47.0, "low": 23.0, "team": "CAR", "bye": 5}, {"name": "Austin Hooper", "pos": "TE", "fpts": 39.1, "trueFpts": 44.4, "high": 58.8, "low": 34.1, "team": "ATL", "bye": 11}, {"name": "Eli Raridon", "pos": "TE", "fpts": 39.0, "trueFpts": 36.8, "high": 34.4, "low": 30.9, "team": "NE", "bye": 11}, {"name": "Darren Waller", "pos": "TE", "fpts": 38.9, "trueFpts": 88.8, "high": 103.2, "low": 73.6, "team": "CAR", "bye": 5}, {"name": "Mitchell Evans", "pos": "TE", "fpts": 38.2, "trueFpts": 17.1, "high": 22.0, "low": 4.0, "team": "CAR", "bye": 5}, {"name": "Jackson Hawes", "pos": "TE", "fpts": 36.8, "trueFpts": 25.4, "high": 22.3, "low": 21.6, "team": "BUF", "bye": 7}, {"name": "Tommy Tremble", "pos": "TE", "fpts": 35.4, "trueFpts": 38.9, "high": 35.4, "low": 34.4, "team": "CAR", "bye": 5}, {"name": "Josh Oliver", "pos": "TE", "fpts": 35.2, "trueFpts": 42.8, "high": 49.3, "low": 31.0, "team": "MIN", "bye": 6}, {"name": "Daniel Bellinger", "pos": "TE", "fpts": 34.6, "trueFpts": 42.2, "high": 51.7, "low": 23.6, "team": "TEN", "bye": 9}, {"name": "John Bates", "pos": "TE", "fpts": 34.5, "trueFpts": 33.9, "high": 31.5, "low": 29.0, "team": "WAS", "bye": 7}, {"name": "Luke Musgrave", "pos": "TE", "fpts": 33.9, "trueFpts": 39.0, "high": 57.8, "low": 24.1, "team": "GB", "bye": 11}, {"name": "Adam Trautman", "pos": "TE", "fpts": 33.1, "trueFpts": 38.2, "high": 40.7, "low": 26.7, "team": "DEN", "bye": 10}, {"name": "Elijah Higgins", "pos": "TE", "fpts": 32.0, "trueFpts": 34.5, "high": 33.1, "low": 28.0, "team": "ARI", "bye": 14}, {"name": "Tanner Koziol", "pos": "TE", "fpts": 31.5, "trueFpts": 14.7, "high": 13.5, "low": 8.8, "team": "JAC", "bye": 7}, {"name": "Drew Sample", "pos": "TE", "fpts": 29.9, "trueFpts": 29.9, "high": 30.0, "low": 30.0, "team": "CIN", "bye": 6}, {"name": "Brock Wright", "pos": "TE", "fpts": 29.8, "trueFpts": 41.3, "high": 52.9, "low": 20.8, "team": "DET", "bye": 6}, {"name": "Nate Boerkircher", "pos": "TE", "fpts": 29.3, "trueFpts": 29.8, "high": 33.5, "low": 18.1, "team": "JAC", "bye": 7}, {"name": "Luke Schoonmaker", "pos": "TE", "fpts": 26.6, "trueFpts": 24.4, "high": 22.9, "low": 17.6, "team": "DAL", "bye": 14}, {"name": "Ben Sinnott", "pos": "TE", "fpts": 25.7, "trueFpts": 25.3, "high": 22.5, "low": 21.1, "team": "WAS", "bye": 7}, {"name": "Mo Alie-Cox", "pos": "TE", "fpts": 25.5, "trueFpts": 21.7, "high": 21.8, "low": 21.8, "team": "IND", "bye": 13}, {"name": "Will Kacmarek", "pos": "TE", "fpts": 25.4, "trueFpts": 48.6, "high": 53.3, "low": 35.1, "team": "MIA", "bye": 6}, {"name": "Davis Allen", "pos": "TE", "fpts": 25.3, "trueFpts": 35.4, "high": 42.5, "low": 20.2, "team": "LAR", "bye": 11}, {"name": "Tanner Hudson", "pos": "TE", "fpts": 24.8, "trueFpts": 22.7, "high": 22.8, "low": 22.8, "team": "CIN", "bye": 6}, {"name": "Foster Moreau", "pos": "TE", "fpts": 24.8, "trueFpts": 22.9, "high": 21.7, "low": 16.1, "team": "HOU", "bye": 8}, {"name": "Michael Trigg", "pos": "TE", "fpts": 24.4, "team": "", "bye": null}, {"name": "Seydou Traore", "pos": "TE", "fpts": 24.1, "team": "", "bye": null}, {"name": "Durham Smythe", "pos": "TE", "fpts": 23.5, "trueFpts": 18.6, "high": 18.7, "low": 18.7, "team": "BAL", "bye": 13}, {"name": "Julian Hill", "pos": "TE", "fpts": 23.1, "trueFpts": 0.0, "high": 0.0, "low": 0.0, "team": "NE", "bye": 11}, {"name": "Marlin Klein", "pos": "TE", "fpts": 22.9, "trueFpts": 34.6, "high": 46.7, "low": 14.7, "team": "HOU", "bye": 8}, {"name": "Luke Farrell", "pos": "TE", "fpts": 22.8, "trueFpts": 7.9, "high": 7.9, "low": 7.9, "team": "SF", "bye": 8}, {"name": "Brevyn Spann-Ford", "pos": "TE", "fpts": 22.7, "trueFpts": 14.8, "high": 13.7, "low": 9.3, "team": "DAL", "bye": 14}, {"name": "Joel Wilson", "pos": "TE", "fpts": 22.5, "team": "", "bye": null}, {"name": "Josh Whyle", "pos": "TE", "fpts": 22.4, "trueFpts": 19.7, "high": 15.0, "low": 15.0, "team": "GB", "bye": 11}, {"name": "Matt Hibner", "pos": "TE", "fpts": 21.7, "team": "", "bye": null}, {"name": "Cade Stover", "pos": "TE", "fpts": 21.1, "trueFpts": 25.5, "high": 26.9, "low": 19.6, "team": "HOU", "bye": 8}, {"name": "Tip Reiman", "pos": "TE", "fpts": 21.1, "trueFpts": 13.8, "high": 14.0, "low": 8.5, "team": "ARI", "bye": 14}, {"name": "Tyler Conklin", "pos": "TE", "fpts": 19.7, "trueFpts": 7.1, "high": 7.1, "low": 7.1, "team": "DET", "bye": 6}, {"name": "Sam Roush", "pos": "TE", "fpts": 18.6, "trueFpts": 14.5, "high": 13.4, "low": 8.5, "team": "CHI", "bye": 10}, {"name": "Stone Smartt", "pos": "TE", "fpts": 17.1, "team": "", "bye": null}, {"name": "Jeremy Ruckert", "pos": "TE", "fpts": 16.7, "trueFpts": 32.0, "high": 33.9, "low": 22.6, "team": "NYJ", "bye": 13}, {"name": "Joe Royer", "pos": "TE", "fpts": 16.5, "trueFpts": 16.5, "high": 14.4, "low": 13.1, "team": "CLE", "bye": 11}, {"name": "Brevin Jordan", "pos": "TE", "fpts": 16.1, "team": "", "bye": null}, {"name": "Grant Calcaterra", "pos": "TE", "fpts": 14.8, "trueFpts": 23.1, "high": 32.5, "low": 5.5, "team": "PHI", "bye": 10}, {"name": "John Michael Gyllenborg", "pos": "TE", "fpts": 14.7, "team": "", "bye": null}, {"name": "Ben Sims", "pos": "TE", "fpts": 14.7, "trueFpts": 35.2, "high": 42.7, "low": 18.2, "team": "MIA", "bye": 6}, {"name": "Payne Durham", "pos": "TE", "fpts": 14.5, "trueFpts": 16.7, "high": 14.7, "low": 13.8, "team": "TB", "bye": 10}, {"name": "Jack Endries", "pos": "TE", "fpts": 13.8, "trueFpts": 24.8, "high": 17.5, "low": 17.5, "team": "CIN", "bye": 6}, {"name": "Joshua Simon", "pos": "TE", "fpts": 13.4, "team": "", "bye": null}, {"name": "Charlie Woerner", "pos": "TE", "fpts": 13.0, "trueFpts": 23.5, "high": 28.2, "low": 11.5, "team": "ATL", "bye": 11}, {"name": "Eric Saubert", "pos": "TE", "fpts": 11.1, "trueFpts": 6.9, "high": 6.9, "low": 6.9, "team": "SEA", "bye": 11}, {"name": "Kylen Granson", "pos": "TE", "fpts": 10.5, "team": "", "bye": null}, {"name": "Nate Adkins", "pos": "TE", "fpts": 7.9, "trueFpts": 25.7, "high": 28.0, "low": 16.8, "team": "DEN", "bye": 10}, {"name": "Josh Cuevas", "pos": "TE", "fpts": 7.5, "trueFpts": 6.9, "high": 7.0, "low": 7.0, "team": "BAL", "bye": 13}, {"name": "Ben Yurosek", "pos": "TE", "fpts": 7.2, "team": "", "bye": null}, {"name": "Jack Velling", "pos": "TE", "fpts": 7.2, "team": "", "bye": null}, {"name": "Jared Wiley", "pos": "TE", "fpts": 7.1, "trueFpts": 21.1, "high": 15.5, "low": 15.5, "team": "KC", "bye": 5}, {"name": "Ty Pezza", "pos": "TE", "fpts": 7.0, "team": "", "bye": null}, {"name": "Devin Culp", "pos": "TE", "fpts": 6.9, "trueFpts": 14.7, "high": 18.8, "low": 2.8, "team": "TB", "bye": 10}, {"name": "Carsen Ryan", "pos": "TE", "fpts": 6.9, "team": "", "bye": null}, {"name": "Gavin Bartholomew", "pos": "TE", "fpts": 6.9, "team": "", "bye": null}, {"name": "Jack Stoll", "pos": "TE", "fpts": 6.5, "trueFpts": 13.4, "high": 13.6, "low": 7.6, "team": "CLE", "bye": 11}, {"name": "Blake Whiteheart", "pos": "TE", "fpts": 6.3, "trueFpts": 0.0, "high": 0.0, "low": 0.0, "team": "CLE", "bye": 11}, {"name": "Drew Ogletree", "pos": "TE", "fpts": 0.0, "trueFpts": 6.9, "high": 6.9, "low": 6.9, "team": "IND", "bye": 13}, {"name": "Jake Briningstool", "pos": "TE", "fpts": 0.0, "team": "", "bye": null}, {"name": "Bauer Sharp", "pos": "TE", "fpts": 0.0, "trueFpts": 22.8, "high": 15.5, "low": 15.5, "team": "TB", "bye": 10}, {"name": "Brenden Bates", "pos": "TE", "fpts": 0.0, "team": "", "bye": null}, {"name": "Bryson Nesbit", "pos": "TE", "fpts": 0.0, "team": "", "bye": null}, {"name": "Brandon Aubrey", "pos": "K", "fpts": 153.0, "trueFpts": 153.0, "high": 171.6, "low": 150.0, "team": "DAL", "bye": 14}, {"name": "Ka'imi Fairbairn", "pos": "K", "fpts": 150.4, "trueFpts": 144.5, "high": 157.7, "low": 138.0, "team": "HOU", "bye": 8}, {"name": "Cameron Dicker", "pos": "K", "fpts": 144.5, "trueFpts": 143.6, "high": 161.7, "low": 143.0, "team": "LAC", "bye": 7}, {"name": "Cam Little", "pos": "K", "fpts": 143.6, "trueFpts": 131.4, "high": 146.7, "low": 125.0, "team": "JAC", "bye": 7}, {"name": "Jason Myers", "pos": "K", "fpts": 136.9, "trueFpts": 150.4, "high": 167.0, "low": 138.0, "team": "SEA", "bye": 11}, {"name": "Eddy Pineiro", "pos": "K", "fpts": 135.9, "trueFpts": 132.6, "high": 155.3, "low": 130.0, "team": "SF", "bye": 8}, {"name": "Tyler Loop", "pos": "K", "fpts": 134.9, "trueFpts": 132.0, "high": 145.9, "low": 125.0, "team": "BAL", "bye": 13}, {"name": "Blake Grupe", "pos": "K", "fpts": 133.4, "trueFpts": 135.9, "high": 146.0, "low": 125.0, "team": "DET", "bye": 6, "flagType": "risk", "flagWhy": "Kicker rankings are volatile and job-security driven"}, {"name": "Cairo Santos", "pos": "K", "fpts": 132.9, "trueFpts": 134.9, "high": 147.0, "low": 124.0, "team": "CHI", "bye": 10}, {"name": "Evan McPherson", "pos": "K", "fpts": 132.6, "trueFpts": 128.7, "high": 142.1, "low": 121.0, "team": "CIN", "bye": 6}, {"name": "Andy Borregales", "pos": "K", "fpts": 132.0, "trueFpts": 119.8, "high": 129.0, "low": 121.0, "team": "NE", "bye": 11}, {"name": "Chase McLaughlin", "pos": "K", "fpts": 131.8, "trueFpts": 132.9, "high": 142.4, "low": 131.0, "team": "TB", "bye": 10}, {"name": "Harrison Mevis", "pos": "K", "fpts": 131.4, "trueFpts": 136.9, "high": 159.5, "low": 120.0, "team": "LAR", "bye": 11}, {"name": "Will Reichard", "pos": "K", "fpts": 130.7, "trueFpts": 130.7, "high": 142.2, "low": 125.0, "team": "MIN", "bye": 6}, {"name": "Chris Boswell", "pos": "K", "fpts": 128.7, "trueFpts": 118.2, "high": 142.7, "low": 111.0, "team": "PIT", "bye": 9}, {"name": "Harrison Butker", "pos": "K", "fpts": 128.6, "trueFpts": 131.8, "high": 148.4, "low": 130.0, "team": "KC", "bye": 5}, {"name": "Wil Lutz", "pos": "K", "fpts": 128.4, "trueFpts": 128.4, "high": 135.7, "low": 133.0, "team": "DEN", "bye": 10}, {"name": "Jake Elliott", "pos": "K", "fpts": 126.4, "trueFpts": 119.8, "high": 135.9, "low": 119.0, "team": "PHI", "bye": 10}, {"name": "Charlie Smyth", "pos": "K", "fpts": 123.5, "trueFpts": 122.9, "high": 137.7, "low": 120.0, "team": "NO", "bye": 8}, {"name": "Tyler Bass", "pos": "K", "fpts": 122.9, "trueFpts": 123.5, "high": 136.7, "low": 124.0, "team": "BUF", "bye": 7}, {"name": "Jake Moody", "pos": "K", "fpts": 120.0, "trueFpts": 116.4, "high": 128.5, "low": 121.0, "team": "WAS", "bye": 7}, {"name": "Daniel Carlson", "pos": "K", "fpts": 119.8, "team": "", "bye": null}, {"name": "Chad Ryland", "pos": "K", "fpts": 119.8, "trueFpts": 111.7, "high": 121.7, "low": 112.0, "team": "ARI", "bye": 14}, {"name": "Jake Bates", "pos": "K", "fpts": 118.2, "trueFpts": 133.4, "high": 153.0, "low": 123.0, "team": "IND", "bye": 13}, {"name": "Joey Slye", "pos": "K", "fpts": 118.0, "trueFpts": 113.8, "high": 123.1, "low": 106.0, "team": "TEN", "bye": 9}, {"name": "Nick Folk", "pos": "K", "fpts": 116.4, "trueFpts": 128.6, "high": 151.0, "low": 109.0, "team": "ATL", "bye": 11}, {"name": "Ben Sauls", "pos": "K", "fpts": 114.6, "trueFpts": 58.5, "high": 119.0, "low": 0.0, "team": "NYG", "bye": 8}, {"name": "Spencer Shrader", "pos": "K", "fpts": 113.8, "trueFpts": 0.0, "high": 0.0, "low": 0.0, "team": "IND", "bye": 13}, {"name": "Ryan Fitzgerald", "pos": "K", "fpts": 111.7, "trueFpts": 108.0, "high": 124.2, "low": 106.0, "team": "CAR", "bye": 5}, {"name": "Jason Sanders", "pos": "K", "fpts": 108.1, "trueFpts": 118.0, "high": 128.3, "low": 122.0, "team": "NYJ", "bye": 13}, {"name": "Zane Gonzalez", "pos": "K", "fpts": 108.0, "trueFpts": 0.0, "high": 0.0, "low": 0.0, "team": "MIA", "bye": 6}, {"name": "Trey Smack", "pos": "K", "fpts": 102.0, "trueFpts": 126.4, "high": 144.2, "low": 124.0, "team": "GB", "bye": 11}, {"name": "Andre Szmyt", "pos": "K", "fpts": 76.8, "trueFpts": 102.0, "high": 121.5, "low": 101.0, "team": "CLE", "bye": 11}, {"name": "Cade York", "pos": "K", "fpts": 36.0, "trueFpts": 36.0, "high": 102.0, "low": 0.0, "team": "NYJ", "bye": 13}, {"name": "Tanner Brown", "pos": "K", "fpts": 0.0, "trueFpts": 0.0, "high": 0.0, "low": 0.0, "team": "NO", "bye": 8}, {"name": "Jahmyr Gibbs", "pos": "RB", "fpts": 337.3, "trueFpts": 337.3, "high": 366.9, "low": 332.5, "team": "DET", "bye": 6}, {"name": "Bijan Robinson", "pos": "RB", "fpts": 332.2, "trueFpts": 332.2, "high": 364.7, "low": 317.1, "team": "ATL", "bye": 11}, {"name": "Christian McCaffrey", "pos": "RB", "fpts": 295.6, "trueFpts": 295.6, "high": 344.1, "low": 268.2, "team": "SF", "bye": 8}, {"name": "Jonathan Taylor", "pos": "RB", "fpts": 289.8, "trueFpts": 289.8, "high": 296.5, "low": 288.3, "team": "IND", "bye": 13}, {"name": "Ashton Jeanty", "pos": "RB", "fpts": 263.9, "trueFpts": 247.6, "high": 265.6, "low": 245.9, "team": "LV", "bye": 13}, {"name": "James Cook III", "pos": "RB", "fpts": 259.5, "trueFpts": 253.8, "high": 275.9, "low": 230.7, "team": "BUF", "bye": 7}, {"name": "Chase Brown", "pos": "RB", "fpts": 253.8, "trueFpts": 246.8, "high": 269.6, "low": 240.2, "team": "CIN", "bye": 6}, {"name": "Saquon Barkley", "pos": "RB", "fpts": 247.6, "trueFpts": 243.9, "high": 262.2, "low": 223.9, "team": "PHI", "bye": 10}, {"name": "De'Von Achane", "pos": "RB", "fpts": 246.8, "trueFpts": 259.5, "high": 271.8, "low": 259.6, "team": "MIA", "bye": 6}, {"name": "Kenneth Walker III", "pos": "RB", "fpts": 243.9, "trueFpts": 234.6, "high": 259.8, "low": 204.9, "team": "KC", "bye": 5}, {"name": "Derrick Henry", "pos": "RB", "fpts": 234.6, "trueFpts": 263.9, "high": 264.9, "low": 260.5, "team": "BAL", "bye": 13}, {"name": "Omarion Hampton", "pos": "RB", "fpts": 231.2, "trueFpts": 228.9, "high": 266.6, "low": 197.1, "team": "LAC", "bye": 7}, {"name": "Javonte Williams", "pos": "RB", "fpts": 229.9, "trueFpts": 217.5, "high": 238.2, "low": 185.5, "team": "DAL", "bye": 14}, {"name": "Kyren Williams", "pos": "RB", "fpts": 228.9, "trueFpts": 223.2, "high": 247.5, "low": 209.9, "team": "LAR", "bye": 11}, {"name": "Breece Hall", "pos": "RB", "fpts": 228.1, "trueFpts": 229.9, "high": 245.7, "low": 211.7, "team": "NYJ", "bye": 13}, {"name": "Jeremiyah Love", "pos": "RB", "fpts": 223.2, "trueFpts": 228.1, "high": 259.1, "low": 200.2, "team": "ARI", "bye": 14}, {"name": "Josh Jacobs", "pos": "RB", "fpts": 221.5, "trueFpts": 231.2, "high": 244.4, "low": 210.7, "team": "GB", "bye": 11}, {"name": "Travis Etienne Jr.", "pos": "RB", "fpts": 217.5, "trueFpts": 209.5, "high": 227.3, "low": 190.4, "team": "NO", "bye": 8}, {"name": "Cam Skattebo", "pos": "RB", "fpts": 209.5, "trueFpts": 221.5, "high": 247.3, "low": 212.9, "team": "NYG", "bye": 8}, {"name": "Quinshon Judkins", "pos": "RB", "fpts": 206.3, "trueFpts": 198.2, "high": 209.1, "low": 177.6, "team": "CLE", "bye": 11}, {"name": "D'Andre Swift", "pos": "RB", "fpts": 203.9, "trueFpts": 206.3, "high": 221.6, "low": 199.1, "team": "CHI", "bye": 10}, {"name": "David Montgomery", "pos": "RB", "fpts": 198.2, "trueFpts": 180.4, "high": 198.3, "low": 170.4, "team": "HOU", "bye": 8}, {"name": "Bucky Irving", "pos": "RB", "fpts": 192.5, "trueFpts": 203.9, "high": 229.5, "low": 190.7, "team": "TB", "bye": 10}, {"name": "TreVeyon Henderson", "pos": "RB", "fpts": 180.4, "trueFpts": 178.3, "high": 198.0, "low": 157.7, "team": "NE", "bye": 11}, {"name": "Bhayshul Tuten", "pos": "RB", "fpts": 178.3, "trueFpts": 192.5, "high": 221.9, "low": 178.6, "team": "JAC", "bye": 7}, {"name": "Jadarian Price", "pos": "RB", "fpts": 175.0, "trueFpts": 174.7, "high": 182.8, "low": 165.0, "team": "SEA", "bye": 11}, {"name": "Jaylen Warren", "pos": "RB", "fpts": 174.7, "trueFpts": 173.9, "high": 202.0, "low": 158.2, "team": "PIT", "bye": 9}, {"name": "Rhamondre Stevenson", "pos": "RB", "fpts": 173.9, "trueFpts": 163.3, "high": 180.9, "low": 145.2, "team": "NE", "bye": 11}, {"name": "Jonathon Brooks", "pos": "RB", "fpts": 164.2, "trueFpts": 137.3, "high": 142.9, "low": 130.8, "team": "CAR", "bye": 5}, {"name": "Rico Dowdle", "pos": "RB", "fpts": 163.3, "trueFpts": 164.2, "high": 172.2, "low": 150.9, "team": "PIT", "bye": 9}, {"name": "Tony Pollard", "pos": "RB", "fpts": 162.7, "trueFpts": 175.0, "high": 197.2, "low": 155.0, "team": "TEN", "bye": 9}, {"name": "Blake Corum", "pos": "RB", "fpts": 161.8, "trueFpts": 132.6, "high": 148.7, "low": 113.9, "team": "LAR", "bye": 11}, {"name": "Chuba Hubbard", "pos": "RB", "fpts": 154.8, "trueFpts": 162.7, "high": 189.9, "low": 142.4, "team": "CAR", "bye": 5}, {"name": "J.K. Dobbins", "pos": "RB", "fpts": 147.5, "trueFpts": 161.8, "high": 174.1, "low": 145.9, "team": "DEN", "bye": 10}, {"name": "Kenny Gainwell", "pos": "RB", "fpts": 145.1, "trueFpts": 143.4, "high": 150.9, "low": 139.9, "team": "TB", "bye": 10}, {"name": "RJ Harvey", "pos": "RB", "fpts": 144.6, "trueFpts": 154.8, "high": 167.2, "low": 141.5, "team": "DEN", "bye": 10}, {"name": "Jacory Croskey-Merritt", "pos": "RB", "fpts": 143.4, "trueFpts": 137.8, "high": 144.6, "low": 130.3, "team": "WAS", "bye": 7}, {"name": "Jordan Mason", "pos": "RB", "fpts": 137.8, "trueFpts": 131.2, "high": 133.2, "low": 123.9, "team": "MIN", "bye": 6}, {"name": "Kyle Monangai", "pos": "RB", "fpts": 137.3, "trueFpts": 145.1, "high": 162.2, "low": 130.4, "team": "CHI", "bye": 10}, {"name": "Rachaad White", "pos": "RB", "fpts": 132.6, "trueFpts": 147.5, "high": 172.9, "low": 129.0, "team": "WAS", "bye": 7}, {"name": "Aaron Jones Sr.", "pos": "RB", "fpts": 131.2, "trueFpts": 144.6, "high": 162.1, "low": 125.3, "team": "MIN", "bye": 6}, {"name": "Chris Rodriguez Jr.", "pos": "RB", "fpts": 113.8, "trueFpts": 92.8, "high": 110.7, "low": 69.8, "team": "JAC", "bye": 7}, {"name": "Woody Marks", "pos": "RB", "fpts": 113.4, "trueFpts": 112.3, "high": 117.6, "low": 105.0, "team": "HOU", "bye": 8}, {"name": "Tyjae Spears", "pos": "RB", "fpts": 113.2, "trueFpts": 113.4, "high": 122.5, "low": 101.9, "team": "TEN", "bye": 9}, {"name": "Jonah Coleman", "pos": "RB", "fpts": 112.3, "trueFpts": 34.1, "high": 34.3, "low": 34.3, "team": "DEN", "bye": 10}, {"name": "Keaton Mitchell", "pos": "RB", "fpts": 106.4, "trueFpts": 76.5, "high": 81.4, "low": 58.8, "team": "LAC", "bye": 7}, {"name": "Tyler Allgeier", "pos": "RB", "fpts": 105.5, "trueFpts": 86.8, "high": 81.8, "low": 78.5, "team": "ARI", "bye": 14}, {"name": "Justice Hill", "pos": "RB", "fpts": 98.4, "trueFpts": 80.3, "high": 86.9, "low": 62.5, "team": "PHI", "bye": 10, "flagType": "risk", "flagWhy": "Committee-role risk in the backfield"}, {"name": "Dylan Sampson", "pos": "RB", "fpts": 92.8, "trueFpts": 89.9, "high": 112.0, "low": 75.0, "team": "CLE", "bye": 11}, {"name": "Zach Charbonnet", "pos": "RB", "fpts": 89.9, "trueFpts": 113.2, "high": 123.5, "low": 97.9, "team": "SEA", "bye": 11}, {"name": "Tyrone Tracy Jr.", "pos": "RB", "fpts": 89.6, "trueFpts": 106.4, "high": 125.7, "low": 84.3, "team": "NYG", "bye": 8}, {"name": "Brian Robinson Jr.", "pos": "RB", "fpts": 88.9, "trueFpts": 89.6, "high": 88.8, "low": 81.4, "team": "ATL", "bye": 11}, {"name": "Samaje Perine", "pos": "RB", "fpts": 87.3, "trueFpts": 72.3, "high": 72.5, "low": 72.5, "team": "GB", "bye": 11, "flagType": "risk", "flagWhy": "Committee back, touches not guaranteed"}, {"name": "Isiah Pacheco", "pos": "RB", "fpts": 86.8, "trueFpts": 105.5, "high": 117.0, "low": 92.5, "team": "DET", "bye": 6}, {"name": "Alvin Kamara", "pos": "RB", "fpts": 84.0, "trueFpts": 113.8, "high": 124.8, "low": 109.2, "team": "NO", "bye": 8}, {"name": "Jaydon Blue", "pos": "RB", "fpts": 83.7, "trueFpts": 42.1, "high": 42.4, "low": 42.4, "team": "DAL", "bye": 14}, {"name": "Mike Washington Jr.", "pos": "RB", "fpts": 80.3, "trueFpts": 75.8, "high": 71.8, "low": 64.9, "team": "LV", "bye": 13}, {"name": "Ray Davis", "pos": "RB", "fpts": 79.6, "trueFpts": 32.0, "high": 34.2, "low": 34.2, "team": "BUF", "bye": 7}, {"name": "Emmett Johnson", "pos": "RB", "fpts": 76.5, "trueFpts": 31.9, "high": 40.6, "low": 14.6, "team": "KC", "bye": 5}, {"name": "Braelon Allen", "pos": "RB", "fpts": 75.8, "trueFpts": 79.6, "high": 75.4, "low": 70.1, "team": "NYJ", "bye": 13}, {"name": "Kaelon Black", "pos": "RB", "fpts": 74.3, "trueFpts": 68.6, "high": 91.3, "low": 29.2, "team": "SF", "bye": 8}, {"name": "Kaytron Allen", "pos": "RB", "fpts": 72.3, "trueFpts": 20.0, "high": 18.5, "low": 13.2, "team": "WAS", "bye": 7}, {"name": "Nicholas Singleton", "pos": "RB", "fpts": 68.6, "trueFpts": 17.5, "high": 17.6, "low": 17.6, "team": "TEN", "bye": 9}, {"name": "Demond Claiborne", "pos": "RB", "fpts": 61.4, "trueFpts": 22.0, "high": 21.1, "low": 13.6, "team": "MIN", "bye": 6}, {"name": "Tank Bigsby", "pos": "RB", "fpts": 59.3, "trueFpts": 98.4, "high": 92.1, "low": 87.4, "team": "BAL", "bye": 13}, {"name": "Sean Tucker", "pos": "RB", "fpts": 57.4, "trueFpts": 34.4, "high": 35.8, "low": 24.7, "team": "TB", "bye": 10}, {"name": "George Holani", "pos": "RB", "fpts": 53.0, "trueFpts": 30.0, "high": 36.5, "low": 15.0, "team": "SEA", "bye": 11}, {"name": "MarShawn Lloyd", "pos": "RB", "fpts": 52.5, "trueFpts": 87.3, "high": 90.9, "low": 67.9, "team": "CIN", "bye": 6}, {"name": "Jaylen Wright", "pos": "RB", "fpts": 47.4, "trueFpts": 47.0, "high": 42.6, "low": 39.4, "team": "MIA", "bye": 6}, {"name": "Kimani Vidal", "pos": "RB", "fpts": 47.0, "trueFpts": 53.0, "high": 54.0, "low": 34.4, "team": "LAC", "bye": 7}, {"name": "Ty Johnson", "pos": "RB", "fpts": 44.7, "trueFpts": 84.0, "high": 99.1, "low": 75.6, "team": "BUF", "bye": 7}, {"name": "Jordan James", "pos": "RB", "fpts": 42.9, "trueFpts": 83.7, "high": 90.0, "low": 61.0, "team": "SF", "bye": 8}, {"name": "James Conner", "pos": "RB", "fpts": 42.1, "trueFpts": 52.5, "high": 79.0, "low": 9.0, "team": "ARI", "bye": 14}, {"name": "Isaiah Davis", "pos": "RB", "fpts": 38.3, "trueFpts": 38.3, "high": 42.9, "low": 23.0, "team": "NYJ", "bye": 13}, {"name": "Ollie Gordon II", "pos": "RB", "fpts": 36.2, "trueFpts": 32.7, "high": 32.8, "low": 32.8, "team": "MIA", "bye": 6}, {"name": "Seth McGowan", "pos": "RB", "fpts": 34.4, "trueFpts": 21.5, "high": 20.6, "low": 12.9, "team": "IND", "bye": 13}, {"name": "Emanuel Wilson", "pos": "RB", "fpts": 34.1, "trueFpts": 47.4, "high": 69.8, "low": 12.4, "team": "SEA", "bye": 11}, {"name": "Najee Harris", "pos": "RB", "fpts": 33.5, "trueFpts": 20.8, "high": 13.0, "low": 13.0, "team": "LAC", "bye": 7}, {"name": "Adam Randall", "pos": "RB", "fpts": 33.0, "trueFpts": 57.4, "high": 71.9, "low": 26.3, "team": "BAL", "bye": 13}, {"name": "LeQuint Allen Jr.", "pos": "RB", "fpts": 32.7, "trueFpts": 36.2, "high": 32.4, "low": 28.7, "team": "JAC", "bye": 7}, {"name": "Chris Brooks", "pos": "RB", "fpts": 32.0, "trueFpts": 59.3, "high": 68.7, "low": 35.7, "team": "GB", "bye": 11}, {"name": "Brashard Smith", "pos": "RB", "fpts": 31.9, "trueFpts": 27.3, "high": 33.3, "low": 6.2, "team": "KC", "bye": 5}, {"name": "DJ Giddens", "pos": "RB", "fpts": 31.6, "trueFpts": 31.6, "high": 31.7, "low": 31.7, "team": "IND", "bye": 13}, {"name": "Emari Demercado", "pos": "RB", "fpts": 31.6, "trueFpts": 74.3, "high": 77.2, "low": 56.0, "team": "KC", "bye": 5}, {"name": "Devin Singletary", "pos": "RB", "fpts": 31.5, "trueFpts": 17.7, "high": 17.8, "low": 17.8, "team": "NYG", "bye": 8}, {"name": "Malik Davis", "pos": "RB", "fpts": 30.0, "trueFpts": 61.4, "high": 75.3, "low": 34.7, "team": "DAL", "bye": 14}, {"name": "Phil Mafah", "pos": "RB", "fpts": 27.3, "trueFpts": 31.6, "high": 21.0, "low": 21.0, "team": "DAL", "bye": 14}, {"name": "Tahj Brooks", "pos": "RB", "fpts": 24.0, "trueFpts": 18.3, "high": 18.5, "low": 18.5, "team": "CIN", "bye": 6}, {"name": "Isaac Guerendo", "pos": "RB", "fpts": 23.6, "trueFpts": 13.9, "high": 15.0, "low": 2.0, "team": "SF", "bye": 8}, {"name": "Trevor Etienne", "pos": "RB", "fpts": 23.1, "trueFpts": 12.7, "high": 14.7, "low": 14.7, "team": "CAR", "bye": 5}, {"name": "Kendre Miller", "pos": "RB", "fpts": 22.7, "trueFpts": 7.2, "high": 7.3, "low": 7.3, "team": "NO", "bye": 8}, {"name": "Jam Miller", "pos": "RB", "fpts": 22.1, "trueFpts": 24.0, "high": 14.0, "low": 14.0, "team": "NE", "bye": 11}, {"name": "Trey Benson", "pos": "RB", "fpts": 22.1, "trueFpts": 0.0, "high": 0.0, "low": 0.0, "team": "ARI", "bye": 14}, {"name": "Eli Heidenreich", "pos": "RB", "fpts": 22.0, "team": "", "bye": null}, {"name": "Jerome Ford", "pos": "RB", "fpts": 21.9, "trueFpts": 17.0, "high": 21.0, "low": 2.0, "team": "WAS", "bye": 7}, {"name": "Kaleb Johnson", "pos": "RB", "fpts": 21.9, "trueFpts": 4.8, "high": 4.8, "low": 4.8, "team": "PIT", "bye": 9}, {"name": "Jarquez Hunter", "pos": "RB", "fpts": 21.5, "trueFpts": 22.7, "high": 12.5, "low": 12.5, "team": "LAR", "bye": 11}, {"name": "Devin Neal", "pos": "RB", "fpts": 20.8, "trueFpts": 18.0, "high": 24.3, "low": 1.3, "team": "NO", "bye": 8}, {"name": "Roschon Johnson", "pos": "RB", "fpts": 20.7, "trueFpts": 33.0, "high": 24.5, "low": 24.5, "team": "CHI", "bye": 10}, {"name": "Jawhar Jordan", "pos": "RB", "fpts": 20.0, "trueFpts": 44.7, "high": 61.5, "low": 12.4, "team": "HOU", "bye": 8}, {"name": "Joe Mixon", "pos": "RB", "fpts": 18.3, "team": "", "bye": null}, {"name": "Damien Martinez", "pos": "RB", "fpts": 18.0, "team": "", "bye": null}, {"name": "Rasheen Ali", "pos": "RB", "fpts": 17.7, "trueFpts": 0.0, "high": 0.5, "low": 0.5, "team": "BAL", "bye": 13}, {"name": "Sione Vaki", "pos": "RB", "fpts": 17.5, "team": "", "bye": null}, {"name": "Nick Chubb", "pos": "RB", "fpts": 17.0, "team": "", "bye": null}, {"name": "Ronnie Rivers", "pos": "RB", "fpts": 15.1, "team": "", "bye": null}, {"name": "Raheim Sanders", "pos": "RB", "fpts": 14.0, "team": "", "bye": null}, {"name": "J'Mari Taylor", "pos": "RB", "fpts": 13.9, "team": "", "bye": null}, {"name": "Will Shipley", "pos": "RB", "fpts": 12.7, "trueFpts": 21.9, "high": 22.4, "low": 22.4, "team": "PHI", "bye": 10}, {"name": "Ulysses Bentley IV", "pos": "RB", "fpts": 12.5, "team": "", "bye": null}, {"name": "Jaleel McLaughlin", "pos": "RB", "fpts": 12.4, "team": "", "bye": null}, {"name": "Lew Nichols III", "pos": "RB", "fpts": 8.4, "team": "", "bye": null}, {"name": "Michael Carter", "pos": "RB", "fpts": 8.2, "team": "", "bye": null}, {"name": "Zavier Scott", "pos": "RB", "fpts": 7.4, "trueFpts": 0.0, "high": 0.0, "low": 0.0, "team": "MIN", "bye": 6}, {"name": "Ahmani Marshall", "pos": "RB", "fpts": 7.2, "team": "", "bye": null}, {"name": "Robert Henry Jr.", "pos": "RB", "fpts": 6.0, "team": "", "bye": null}, {"name": "Nathan Carter", "pos": "RB", "fpts": 5.9, "team": "", "bye": null}, {"name": "Travis Homer", "pos": "RB", "fpts": 5.5, "team": "", "bye": null}, {"name": "Audric Estime", "pos": "RB", "fpts": 4.8, "trueFpts": 22.1, "high": 13.5, "low": 13.5, "team": "NO", "bye": 8}, {"name": "Noah Whittington", "pos": "RB", "fpts": 2.4, "team": "", "bye": null}, {"name": "Kareem Hunt", "pos": "RB", "fpts": 0.0, "team": "", "bye": null}, {"name": "Kyle Juszczyk", "pos": "RB", "fpts": 0.0, "trueFpts": 42.9, "high": 41.9, "low": 36.4, "team": "SF", "bye": 8}, {"name": "Kenny McIntosh", "pos": "RB", "fpts": 0.0, "team": "", "bye": null}, {"name": "Bam Knight", "pos": "RB", "fpts": 0.0, "trueFpts": 0.0, "high": 0.8, "low": 0.8, "team": "ARI", "bye": 14}, {"name": "Austin Ekeler", "pos": "RB", "fpts": 0.0, "team": "", "bye": null}, {"name": "Terrell Jennings", "pos": "RB", "fpts": 0.0, "team": "", "bye": null}, {"name": "Dameon Pierce", "pos": "RB", "fpts": 0.0, "trueFpts": 22.1, "high": 13.0, "low": 13.0, "team": "PHI", "bye": 10}, {"name": "Antonio Gibson", "pos": "RB", "fpts": 0.0, "team": "", "bye": null}, {"name": "Chris Collier", "pos": "RB", "fpts": 0.0, "trueFpts": 0.0, "high": 0.0, "low": 0.0, "team": "LV", "bye": 13}, {"name": "Josh Williams", "pos": "RB", "fpts": 0.0, "trueFpts": 0.0, "high": 0.1, "low": 0.1, "team": "TB", "bye": 10}, {"name": "Josh Allen", "pos": "QB", "fpts": 372.3, "trueFpts": 372.3, "high": 402.0, "low": 369.2, "team": "BUF", "bye": 7}, {"name": "Lamar Jackson", "pos": "QB", "fpts": 324.8, "trueFpts": 324.8, "high": 363.0, "low": 322.5, "team": "BAL", "bye": 13}, {"name": "Drake Maye", "pos": "QB", "fpts": 322.8, "trueFpts": 322.8, "high": 349.0, "low": 319.0, "team": "NE", "bye": 11}, {"name": "Jayden Daniels", "pos": "QB", "fpts": 322.6, "trueFpts": 322.6, "high": 354.0, "low": 318.5, "team": "WAS", "bye": 7}, {"name": "Joe Burrow", "pos": "QB", "fpts": 320.6, "trueFpts": 310.7, "high": 350.0, "low": 304.4, "team": "CIN", "bye": 6}, {"name": "Jalen Hurts", "pos": "QB", "fpts": 310.7, "trueFpts": 320.6, "high": 348.0, "low": 320.7, "team": "PHI", "bye": 10}, {"name": "Caleb Williams", "pos": "QB", "fpts": 310.3, "trueFpts": 303.3, "high": 357.0, "low": 282.1, "team": "CHI", "bye": 10}, {"name": "Justin Herbert", "pos": "QB", "fpts": 307.4, "trueFpts": 299.4, "high": 335.0, "low": 282.8, "team": "LAC", "bye": 7}, {"name": "Trevor Lawrence", "pos": "QB", "fpts": 306.2, "trueFpts": 306.0, "high": 357.0, "low": 287.4, "team": "JAC", "bye": 7}, {"name": "Dak Prescott", "pos": "QB", "fpts": 306.0, "trueFpts": 306.2, "high": 361.0, "low": 286.8, "team": "DAL", "bye": 14}, {"name": "Jaxson Dart", "pos": "QB", "fpts": 303.7, "trueFpts": 310.3, "high": 346.0, "low": 301.5, "team": "NYG", "bye": 8}, {"name": "Jordan Love", "pos": "QB", "fpts": 303.3, "trueFpts": 267.9, "high": 300.0, "low": 259.7, "team": "GB", "bye": 11}, {"name": "Brock Purdy", "pos": "QB", "fpts": 299.4, "trueFpts": 307.4, "high": 350.0, "low": 292.5, "team": "SF", "bye": 8}, {"name": "Patrick Mahomes II", "pos": "QB", "fpts": 297.8, "trueFpts": 303.7, "high": 345.0, "low": 289.7, "team": "KC", "bye": 5}, {"name": "Jared Goff", "pos": "QB", "fpts": 293.9, "trueFpts": 287.8, "high": 337.0, "low": 268.9, "team": "DET", "bye": 6}, {"name": "Bo Nix", "pos": "QB", "fpts": 287.8, "trueFpts": 297.8, "high": 322.2, "low": 295.2, "team": "DEN", "bye": 10}, {"name": "Matthew Stafford", "pos": "QB", "fpts": 286.3, "trueFpts": 293.9, "high": 341.0, "low": 293.2, "team": "LAR", "bye": 11}, {"name": "Kyler Murray", "pos": "QB", "fpts": 282.0, "trueFpts": 280.3, "high": 315.0, "low": 251.0, "team": "MIN", "bye": 6}, {"name": "Baker Mayfield", "pos": "QB", "fpts": 280.3, "trueFpts": 282.0, "high": 333.0, "low": 265.6, "team": "TB", "bye": 10}, {"name": "Malik Willis", "pos": "QB", "fpts": 274.4, "trueFpts": 271.1, "high": 321.0, "low": 237.8, "team": "MIA", "bye": 6}, {"name": "C.J. Stroud", "pos": "QB", "fpts": 271.1, "trueFpts": 260.6, "high": 311.0, "low": 245.8, "team": "HOU", "bye": 8}, {"name": "Sam Darnold", "pos": "QB", "fpts": 267.9, "trueFpts": 266.3, "high": 313.0, "low": 242.6, "team": "SEA", "bye": 11}, {"name": "Tyler Shough", "pos": "QB", "fpts": 266.3, "trueFpts": 286.3, "high": 311.7, "low": 265.5, "team": "NO", "bye": 8}, {"name": "Daniel Jones", "pos": "QB", "fpts": 260.6, "trueFpts": 274.4, "high": 324.0, "low": 266.8, "team": "IND", "bye": 13}, {"name": "Cam Ward", "pos": "QB", "fpts": 254.1, "trueFpts": 232.1, "high": 259.0, "low": 218.8, "team": "TEN", "bye": 9}, {"name": "Bryce Young", "pos": "QB", "fpts": 234.7, "trueFpts": 254.1, "high": 292.0, "low": 238.0, "team": "CAR", "bye": 5}, {"name": "Aaron Rodgers", "pos": "QB", "fpts": 232.4, "trueFpts": 223.2, "high": 246.0, "low": 218.4, "team": "PIT", "bye": 9}, {"name": "Jacoby Brissett", "pos": "QB", "fpts": 232.1, "trueFpts": 232.4, "high": 283.0, "low": 199.7, "team": "ARI", "bye": 14}, {"name": "Fernando Mendoza", "pos": "QB", "fpts": 223.2, "trueFpts": 192.8, "high": 206.9, "low": 187.4, "team": "LV", "bye": 13}, {"name": "Geno Smith", "pos": "QB", "fpts": 192.8, "trueFpts": 234.7, "high": 250.5, "low": 231.9, "team": "NYJ", "bye": 13}, {"name": "Tua Tagovailoa", "pos": "QB", "fpts": 164.5, "trueFpts": 164.5, "high": 254.0, "low": 114.9, "team": "ATL", "bye": 11}, {"name": "Shedeur Sanders", "pos": "QB", "fpts": 136.5, "trueFpts": 108.8, "high": 136.1, "low": 96.5, "team": "CLE", "bye": 11}, {"name": "Kirk Cousins", "pos": "QB", "fpts": 108.8, "trueFpts": 47.3, "high": 58.5, "low": 38.0, "team": "LV", "bye": 13}, {"name": "Deshaun Watson", "pos": "QB", "fpts": 83.6, "trueFpts": 136.5, "high": 148.0, "low": 124.2, "team": "CLE", "bye": 11}, {"name": "Michael Penix Jr.", "pos": "QB", "fpts": 47.3, "trueFpts": 83.6, "high": 114.0, "low": 37.0, "team": "ATL", "bye": 11}, {"name": "J.J. McCarthy", "pos": "QB", "fpts": 23.4, "trueFpts": 22.5, "high": 39.9, "low": 7.0, "team": "MIN", "bye": 6}, {"name": "Carson Beck", "pos": "QB", "fpts": 23.1, "trueFpts": 23.1, "high": 32.4, "low": 8.0, "team": "ARI", "bye": 14}, {"name": "Mac Jones", "pos": "QB", "fpts": 22.5, "trueFpts": 10.5, "high": 11.2, "low": 7.0, "team": "SF", "bye": 8}, {"name": "Justin Fields", "pos": "QB", "fpts": 18.0, "trueFpts": 12.0, "high": 15.4, "low": 7.0, "team": "KC", "bye": 5}, {"name": "Anthony Richardson Sr.", "pos": "QB", "fpts": 12.7, "trueFpts": 10.4, "high": 8.0, "low": 8.0, "team": "IND", "bye": 13}, {"name": "Ty Simpson", "pos": "QB", "fpts": 12.4, "trueFpts": 23.4, "high": 34.0, "low": 10.1, "team": "LAR", "bye": 11}, {"name": "Gardner Minshew II", "pos": "QB", "fpts": 12.0, "trueFpts": 9.7, "high": 8.0, "low": 7.2, "team": "ARI", "bye": 14}, {"name": "Joe Flacco", "pos": "QB", "fpts": 12.0, "trueFpts": 10.3, "high": 10.5, "low": 4.0, "team": "CIN", "bye": 6}, {"name": "Jameis Winston", "pos": "QB", "fpts": 11.7, "trueFpts": 11.7, "high": 19.9, "low": 5.0, "team": "NYG", "bye": 8}, {"name": "Quinn Ewers", "pos": "QB", "fpts": 11.5, "trueFpts": 11.5, "high": 18.2, "low": 7.0, "team": "MIA", "bye": 6}, {"name": "Tyson Bagent", "pos": "QB", "fpts": 11.5, "trueFpts": 11.5, "high": 12.4, "low": 8.0, "team": "CHI", "bye": 10}, {"name": "Will Levis", "pos": "QB", "fpts": 11.4, "trueFpts": 11.4, "high": 9.0, "low": 9.0, "team": "TEN", "bye": 9}, {"name": "Jarrett Stidham", "pos": "QB", "fpts": 11.3, "trueFpts": 11.3, "high": 10.4, "low": 9.0, "team": "DEN", "bye": 10}, {"name": "Jake Browning", "pos": "QB", "fpts": 11.3, "trueFpts": 11.3, "high": 10.3, "low": 7.0, "team": "TB", "bye": 10}, {"name": "Tyrod Taylor", "pos": "QB", "fpts": 10.9, "trueFpts": 10.9, "high": 13.3, "low": 9.3, "team": "GB", "bye": 11}, {"name": "Joshua Dobbs", "pos": "QB", "fpts": 10.7, "trueFpts": 10.7, "high": 8.7, "low": 8.0, "team": "DET", "bye": 6}, {"name": "Tommy DeVito", "pos": "QB", "fpts": 10.6, "trueFpts": 10.6, "high": 10.3, "low": 10.3, "team": "NE", "bye": 11}, {"name": "Tyler Huntley", "pos": "QB", "fpts": 10.6, "trueFpts": 10.6, "high": 9.0, "low": 8.6, "team": "BAL", "bye": 13}, {"name": "Trey Lance", "pos": "QB", "fpts": 10.4, "trueFpts": 10.4, "high": 9.4, "low": 7.0, "team": "LAC", "bye": 7}, {"name": "Tanner McKee", "pos": "QB", "fpts": 10.3, "trueFpts": 10.3, "high": 9.5, "low": 8.0, "team": "PHI", "bye": 10}, {"name": "Kenny Pickett", "pos": "QB", "fpts": 10.3, "trueFpts": 10.3, "high": 12.0, "low": 7.0, "team": "CAR", "bye": 5}, {"name": "Spencer Rattler", "pos": "QB", "fpts": 10.2, "trueFpts": 10.2, "high": 9.0, "low": 7.0, "team": "NO", "bye": 8}, {"name": "Sam Howell", "pos": "QB", "fpts": 10.2, "trueFpts": 10.2, "high": 9.6, "low": 9.6, "team": "DAL", "bye": 14}, {"name": "Drew Lock", "pos": "QB", "fpts": 10.0, "trueFpts": 10.0, "high": 8.0, "low": 7.0, "team": "SEA", "bye": 11}, {"name": "Andy Dalton", "pos": "QB", "fpts": 9.9, "trueFpts": 9.9, "high": 7.0, "low": 7.0, "team": "PHI", "bye": 10}, {"name": "Nick Mullens", "pos": "QB", "fpts": 9.8, "trueFpts": 9.8, "high": 10.3, "low": 8.0, "team": "JAC", "bye": 7}, {"name": "Chris Oladokun", "pos": "QB", "fpts": 9.7, "trueFpts": 9.7, "high": 7.0, "low": 7.0, "team": "KC", "bye": 5}, {"name": "Behren Morton", "pos": "QB", "fpts": 9.6, "trueFpts": 9.6, "high": 8.0, "low": 8.0, "team": "NE", "bye": 11}, {"name": "Cade Klubnik", "pos": "QB", "fpts": 9.4, "trueFpts": 9.4, "high": 12.0, "low": 7.0, "team": "NYJ", "bye": 13}, {"name": "Drew Allar", "pos": "QB", "fpts": 9.3, "trueFpts": 9.3, "high": 9.4, "low": 7.0, "team": "PIT", "bye": 9}, {"name": "Adrian Martinez", "pos": "QB", "fpts": 9.3, "trueFpts": 9.3, "high": 8.0, "low": 8.0, "team": "SF", "bye": 8}, {"name": "Garrett Nussmeier", "pos": "QB", "fpts": 9.2, "trueFpts": 9.2, "high": 8.0, "low": 8.0, "team": "KC", "bye": 5}, {"name": "Cole Payton", "pos": "QB", "fpts": 9.2, "trueFpts": 9.2, "high": 8.0, "low": 8.0, "team": "PHI", "bye": 10}, {"name": "Jalen Milroe", "pos": "QB", "fpts": 9.1, "trueFpts": 9.1, "high": 7.0, "low": 7.0, "team": "SEA", "bye": 11}, {"name": "Kyle Allen", "pos": "QB", "fpts": 9.1, "trueFpts": 9.1, "high": 11.8, "low": 7.0, "team": "BUF", "bye": 7}, {"name": "Mitchell Trubisky", "pos": "QB", "fpts": 9.0, "trueFpts": 9.0, "high": 8.0, "low": 7.7, "team": "TEN", "bye": 9}, {"name": "Joe Milton III", "pos": "QB", "fpts": 8.5, "trueFpts": 8.5, "high": 13.3, "low": 0.0, "team": "DAL", "bye": 14}, {"name": "Will Howard", "pos": "QB", "fpts": 6.7, "trueFpts": 6.7, "high": 12.1, "low": 0.0, "team": "PIT", "bye": 9}, {"name": "Mason Rudolph", "pos": "QB", "fpts": 5.6, "trueFpts": 5.6, "high": 9.0, "low": 0.0, "team": "PIT", "bye": 9}, {"name": "Brady Cook", "pos": "QB", "fpts": 5.0, "trueFpts": 5.0, "high": 7.0, "low": 0.0, "team": "NYJ", "bye": 13}, {"name": "Josh Johnson", "pos": "QB", "fpts": 0.0, "trueFpts": 0.0, "high": 0.0, "low": 0.0, "team": "CIN", "bye": 6}, {"name": "Stetson Bennett IV", "pos": "QB", "fpts": 0.0, "trueFpts": 0.0, "high": 0.0, "low": 0.0, "team": "LAR", "bye": 11}, {"name": "Aidan O'Connell", "pos": "QB", "fpts": 0.0, "trueFpts": 0.0, "high": 0.0, "low": 0.0, "team": "LV", "bye": 13}, {"name": "Ja'Marr Chase", "pos": "WR", "fpts": 281.3, "trueFpts": 274.9, "high": 333.1, "low": 267.6, "team": "CIN", "bye": 6}, {"name": "Puka Nacua", "pos": "WR", "fpts": 274.9, "trueFpts": 281.3, "high": 285.0, "low": 278.9, "team": "LAR", "bye": 11}, {"name": "Jaxon Smith-Njigba", "pos": "WR", "fpts": 268.7, "trueFpts": 268.7, "high": 311.1, "low": 265.5, "team": "SEA", "bye": 11}, {"name": "Amon-Ra St. Brown", "pos": "WR", "fpts": 261.2, "trueFpts": 261.2, "high": 317.3, "low": 253.7, "team": "DET", "bye": 6}, {"name": "CeeDee Lamb", "pos": "WR", "fpts": 238.3, "trueFpts": 224.4, "high": 258.0, "low": 209.8, "team": "DAL", "bye": 14}, {"name": "Justin Jefferson", "pos": "WR", "fpts": 224.4, "trueFpts": 223.2, "high": 267.6, "low": 209.3, "team": "MIN", "bye": 6}, {"name": "Drake London", "pos": "WR", "fpts": 224.2, "trueFpts": 238.3, "high": 273.5, "low": 218.5, "team": "ATL", "bye": 11}, {"name": "Nico Collins", "pos": "WR", "fpts": 223.2, "trueFpts": 207.0, "high": 241.3, "low": 203.9, "team": "HOU", "bye": 8}, {"name": "A.J. Brown", "pos": "WR", "fpts": 211.3, "trueFpts": 211.3, "high": 244.3, "low": 206.3, "team": "NE", "bye": 11}, {"name": "Chris Olave", "pos": "WR", "fpts": 210.9, "trueFpts": 210.4, "high": 247.1, "low": 201.5, "team": "NO", "bye": 8}, {"name": "George Pickens", "pos": "WR", "fpts": 210.4, "trueFpts": 210.9, "high": 232.3, "low": 200.5, "team": "DAL", "bye": 14}, {"name": "Rashee Rice", "pos": "WR", "fpts": 207.0, "trueFpts": 224.2, "high": 251.2, "low": 223.5, "team": "KC", "bye": 5}, {"name": "Zay Flowers", "pos": "WR", "fpts": 201.6, "trueFpts": 201.6, "high": 233.9, "low": 197.8, "team": "BAL", "bye": 13}, {"name": "Malik Nabers", "pos": "WR", "fpts": 198.1, "trueFpts": 198.1, "high": 230.3, "low": 196.1, "team": "NYG", "bye": 8}, {"name": "DeVonta Smith", "pos": "WR", "fpts": 194.1, "trueFpts": 192.9, "high": 233.6, "low": 185.9, "team": "PHI", "bye": 10}, {"name": "Garrett Wilson", "pos": "WR", "fpts": 192.9, "trueFpts": 194.1, "high": 243.7, "low": 187.2, "team": "NYJ", "bye": 13}, {"name": "Tetairoa McMillan", "pos": "WR", "fpts": 192.7, "trueFpts": 192.7, "high": 223.7, "low": 192.8, "team": "CAR", "bye": 5}, {"name": "Ladd McConkey", "pos": "WR", "fpts": 191.7, "trueFpts": 180.6, "high": 209.2, "low": 180.6, "team": "LAC", "bye": 7}, {"name": "Tee Higgins", "pos": "WR", "fpts": 187.9, "trueFpts": 186.0, "high": 206.4, "low": 180.7, "team": "CIN", "bye": 6}, {"name": "Jaylen Waddle", "pos": "WR", "fpts": 186.0, "trueFpts": 172.9, "high": 207.8, "low": 164.1, "team": "DEN", "bye": 10}, {"name": "Emeka Egbuka", "pos": "WR", "fpts": 185.1, "trueFpts": 191.7, "high": 222.2, "low": 187.6, "team": "TB", "bye": 10}, {"name": "DJ Moore", "pos": "WR", "fpts": 180.6, "trueFpts": 173.9, "high": 206.2, "low": 162.7, "team": "BUF", "bye": 7}, {"name": "Terry McLaurin", "pos": "WR", "fpts": 179.8, "trueFpts": 175.2, "high": 196.5, "low": 176.1, "team": "WAS", "bye": 7}, {"name": "Christian Watson", "pos": "WR", "fpts": 175.2, "trueFpts": 166.8, "high": 201.7, "low": 159.8, "team": "GB", "bye": 11}, {"name": "Davante Adams", "pos": "WR", "fpts": 174.1, "trueFpts": 187.9, "high": 220.5, "low": 172.4, "team": "LAR", "bye": 11}, {"name": "Luther Burden III", "pos": "WR", "fpts": 173.9, "trueFpts": 172.0, "high": 203.2, "low": 167.3, "team": "CHI", "bye": 10}, {"name": "Jameson Williams", "pos": "WR", "fpts": 172.9, "trueFpts": 185.1, "high": 220.2, "low": 176.5, "team": "DET", "bye": 6}, {"name": "Marvin Harrison Jr.", "pos": "WR", "fpts": 172.0, "trueFpts": 163.7, "high": 194.9, "low": 158.8, "team": "ARI", "bye": 14}, {"name": "Rome Odunze", "pos": "WR", "fpts": 170.1, "trueFpts": 179.8, "high": 201.1, "low": 178.1, "team": "CHI", "bye": 10}, {"name": "Parker Washington", "pos": "WR", "fpts": 166.8, "trueFpts": 153.0, "high": 173.5, "low": 154.5, "team": "JAC", "bye": 7}, {"name": "Carnell Tate", "pos": "WR", "fpts": 164.7, "trueFpts": 148.2, "high": 182.4, "low": 122.2, "team": "TEN", "bye": 9}, {"name": "Brian Thomas Jr.", "pos": "WR", "fpts": 163.7, "trueFpts": 152.1, "high": 168.4, "low": 148.3, "team": "JAC", "bye": 7}, {"name": "Mike Evans", "pos": "WR", "fpts": 163.0, "trueFpts": 170.1, "high": 205.7, "low": 159.4, "team": "SF", "bye": 8}, {"name": "Michael Pittman Jr.", "pos": "WR", "fpts": 153.0, "trueFpts": 150.0, "high": 195.9, "low": 134.2, "team": "PIT", "bye": 9}, {"name": "DK Metcalf", "pos": "WR", "fpts": 152.1, "trueFpts": 163.0, "high": 196.0, "low": 155.1, "team": "PIT", "bye": 9}, {"name": "Chris Godwin Jr.", "pos": "WR", "fpts": 150.0, "trueFpts": 141.9, "high": 175.8, "low": 131.2, "team": "TB", "bye": 10}, {"name": "Courtland Sutton", "pos": "WR", "fpts": 148.2, "trueFpts": 164.7, "high": 192.0, "low": 158.7, "team": "DEN", "bye": 10}, {"name": "Michael Wilson", "pos": "WR", "fpts": 144.9, "trueFpts": 142.9, "high": 173.0, "low": 139.8, "team": "ARI", "bye": 14}, {"name": "Alec Pierce", "pos": "WR", "fpts": 144.5, "trueFpts": 174.1, "high": 196.3, "low": 167.5, "team": "IND", "bye": 13}, {"name": "Deebo Samuel Sr.", "pos": "WR", "fpts": 144.0, "trueFpts": 143.0, "high": 158.5, "low": 139.1, "team": "LAC", "bye": 7, "flagType": "risk", "flagWhy": "Age/role concerns experts are pricing in"}, {"name": "Josh Downs", "pos": "WR", "fpts": 143.0, "trueFpts": 139.0, "high": 179.5, "low": 133.4, "team": "IND", "bye": 13}, {"name": "Stefon Diggs", "pos": "WR", "fpts": 142.9, "trueFpts": 132.7, "high": 171.1, "low": 124.5, "team": "WAS", "bye": 7}, {"name": "Jordan Addison", "pos": "WR", "fpts": 141.9, "trueFpts": 141.3, "high": 163.9, "low": 137.6, "team": "MIN", "bye": 6}, {"name": "Jordyn Tyson", "pos": "WR", "fpts": 141.3, "trueFpts": 140.9, "high": 164.4, "low": 131.6, "team": "NO", "bye": 8}, {"name": "Wan'Dale Robinson", "pos": "WR", "fpts": 140.9, "trueFpts": 140.8, "high": 182.1, "low": 134.0, "team": "TEN", "bye": 9}, {"name": "Jakobi Meyers", "pos": "WR", "fpts": 140.8, "trueFpts": 144.5, "high": 177.7, "low": 136.1, "team": "JAC", "bye": 7}, {"name": "Jayden Reed", "pos": "WR", "fpts": 139.7, "trueFpts": 144.9, "high": 182.9, "low": 132.6, "team": "GB", "bye": 11}, {"name": "Makai Lemon", "pos": "WR", "fpts": 139.0, "trueFpts": 128.6, "high": 135.8, "low": 113.4, "team": "PHI", "bye": 10}, {"name": "Xavier Worthy", "pos": "WR", "fpts": 137.3, "trueFpts": 139.7, "high": 167.2, "low": 118.6, "team": "KC", "bye": 5}, {"name": "Romeo Doubs", "pos": "WR", "fpts": 132.8, "trueFpts": 131.7, "high": 163.1, "low": 121.2, "team": "NE", "bye": 11}, {"name": "De'Zhaun Stribling", "pos": "WR", "fpts": 132.7, "trueFpts": 117.2, "high": 128.0, "low": 98.0, "team": "SF", "bye": 8}, {"name": "Khalil Shakir", "pos": "WR", "fpts": 131.8, "trueFpts": 130.1, "high": 171.4, "low": 112.8, "team": "BUF", "bye": 7}, {"name": "Matthew Golden", "pos": "WR", "fpts": 131.7, "trueFpts": 137.3, "high": 147.2, "low": 117.4, "team": "GB", "bye": 11}, {"name": "Jalen Coker", "pos": "WR", "fpts": 130.1, "trueFpts": 126.8, "high": 130.1, "low": 115.6, "team": "CAR", "bye": 5}, {"name": "Rashid Shaheed", "pos": "WR", "fpts": 128.6, "trueFpts": 131.8, "high": 129.0, "low": 126.6, "team": "SEA", "bye": 11}, {"name": "Denzel Boston", "pos": "WR", "fpts": 128.3, "trueFpts": 120.1, "high": 121.4, "low": 108.5, "team": "CLE", "bye": 11}, {"name": "KC Concepcion", "pos": "WR", "fpts": 126.8, "trueFpts": 132.8, "high": 132.0, "low": 123.8, "team": "CLE", "bye": 11}, {"name": "Jalen McMillan", "pos": "WR", "fpts": 122.0, "trueFpts": 110.5, "high": 109.2, "low": 101.3, "team": "TB", "bye": 10}, {"name": "Tre Tucker", "pos": "WR", "fpts": 120.9, "trueFpts": 117.0, "high": 114.5, "low": 109.1, "team": "LV", "bye": 13}, {"name": "Jauan Jennings", "pos": "WR", "fpts": 120.1, "trueFpts": 109.7, "high": 119.4, "low": 92.5, "team": "MIN", "bye": 6}, {"name": "Omar Cooper Jr.", "pos": "WR", "fpts": 120.1, "trueFpts": 90.9, "high": 86.9, "low": 86.1, "team": "NYJ", "bye": 13}, {"name": "Jerry Jeudy", "pos": "WR", "fpts": 117.6, "trueFpts": 117.6, "high": 113.7, "low": 113.1, "team": "CLE", "bye": 11}, {"name": "Adonai Mitchell", "pos": "WR", "fpts": 117.2, "trueFpts": 93.4, "high": 103.8, "low": 74.9, "team": "NYJ", "bye": 13}, {"name": "Troy Franklin", "pos": "WR", "fpts": 117.0, "trueFpts": 78.9, "high": 96.3, "low": 51.9, "team": "DEN", "bye": 10}, {"name": "Pat Bryant", "pos": "WR", "fpts": 116.1, "trueFpts": 58.3, "high": 58.5, "low": 58.5, "team": "DEN", "bye": 10, "flagType": "opportunity", "flagWhy": "Rookie -- experts see real role/target upside the model has not priced in yet"}, {"name": "Tank Dell", "pos": "WR", "fpts": 110.5, "trueFpts": 144.0, "high": 146.5, "low": 126.0, "team": "SF", "bye": 8, "flagType": "risk", "flagWhy": "Recovering from a serious injury -- worth rechecking closer to the draft"}, {"name": "Calvin Ridley", "pos": "WR", "fpts": 109.7, "trueFpts": 128.3, "high": 124.1, "low": 121.6, "team": "TEN", "bye": 9}, {"name": "Tre' Harris", "pos": "WR", "fpts": 108.5, "trueFpts": 72.3, "high": 72.4, "low": 72.4, "team": "LAC", "bye": 7}, {"name": "Cooper Kupp", "pos": "WR", "fpts": 101.5, "trueFpts": 74.1, "high": 74.4, "low": 74.4, "team": "PHI", "bye": 10, "flagType": "risk", "flagWhy": "Age + new-team fit uncertainty"}, {"name": "Ja'Kobi Lane", "pos": "WR", "fpts": 96.3, "trueFpts": 88.4, "high": 101.7, "low": 66.4, "team": "NE", "bye": 11, "flagType": "risk", "flagWhy": "Model likes the talent more than experts trust the target share"}, {"name": "Quentin Johnston", "pos": "WR", "fpts": 93.4, "trueFpts": 116.1, "high": 129.0, "low": 92.5, "team": "HOU", "bye": 8}, {"name": "Ryan Flournoy", "pos": "WR", "fpts": 90.9, "trueFpts": 72.4, "high": 72.6, "low": 72.6, "team": "DAL", "bye": 14}, {"name": "Jalen Nailor", "pos": "WR", "fpts": 90.8, "trueFpts": 108.5, "high": 106.8, "low": 101.5, "team": "LV", "bye": 13}, {"name": "Jaylin Noel", "pos": "WR", "fpts": 88.5, "trueFpts": 59.8, "high": 61.9, "low": 61.9, "team": "HOU", "bye": 8, "flagType": "opportunity", "flagWhy": "Rookie -- similar opportunity story ahead of the raw projection"}, {"name": "Malik Washington", "pos": "WR", "fpts": 88.4, "trueFpts": 85.3, "high": 86.6, "low": 73.8, "team": "MIA", "bye": 6}, {"name": "Isaac TeSlaa", "pos": "WR", "fpts": 87.3, "trueFpts": 72.4, "high": 74.7, "low": 61.8, "team": "DET", "bye": 6}, {"name": "Rashod Bateman", "pos": "WR", "fpts": 86.4, "trueFpts": 120.9, "high": 129.2, "low": 105.0, "team": "BAL", "bye": 13}, {"name": "Keenan Allen", "pos": "WR", "fpts": 85.8, "team": "", "bye": null}, {"name": "Travis Hunter", "pos": "WR", "fpts": 85.3, "trueFpts": 90.8, "high": 92.2, "low": 92.2, "team": "JAC", "bye": 7}, {"name": "Chimere Dike", "pos": "WR", "fpts": 80.0, "trueFpts": 61.7, "high": 83.0, "low": 36.4, "team": "TEN", "bye": 9}, {"name": "Darnell Mooney", "pos": "WR", "fpts": 79.4, "trueFpts": 85.8, "high": 87.7, "low": 76.1, "team": "NYG", "bye": 8}, {"name": "Elic Ayomanor", "pos": "WR", "fpts": 79.3, "trueFpts": 63.4, "high": 97.0, "low": 21.9, "team": "TEN", "bye": 9}, {"name": "Dontayvion Wicks", "pos": "WR", "fpts": 78.9, "trueFpts": 101.5, "high": 108.7, "low": 87.4, "team": "SEA", "bye": 11}, {"name": "Devaughn Vele", "pos": "WR", "fpts": 78.7, "trueFpts": 76.7, "high": 91.5, "low": 53.1, "team": "NO", "bye": 8}, {"name": "Zachariah Branch", "pos": "WR", "fpts": 76.7, "trueFpts": 79.4, "high": 81.7, "low": 81.7, "team": "ATL", "bye": 11}, {"name": "Keon Coleman", "pos": "WR", "fpts": 76.7, "trueFpts": 49.4, "high": 50.1, "low": 50.1, "team": "BUF", "bye": 7}, {"name": "Jack Bech", "pos": "WR", "fpts": 75.6, "trueFpts": 65.2, "high": 65.4, "low": 65.4, "team": "LV", "bye": 13}, {"name": "Germie Bernard", "pos": "WR", "fpts": 74.1, "trueFpts": 88.5, "high": 88.8, "low": 80.6, "team": "PIT", "bye": 9}, {"name": "Christian Kirk", "pos": "WR", "fpts": 72.4, "trueFpts": 76.7, "high": 96.8, "low": 48.1, "team": "SF", "bye": 8}, {"name": "Antonio Williams", "pos": "WR", "fpts": 72.4, "trueFpts": 86.4, "high": 93.7, "low": 69.6, "team": "WAS", "bye": 7}, {"name": "Tory Horton", "pos": "WR", "fpts": 72.3, "trueFpts": 79.3, "high": 90.2, "low": 59.0, "team": "SEA", "bye": 11}, {"name": "Elijah Sarratt", "pos": "WR", "fpts": 71.8, "trueFpts": 42.2, "high": 42.3, "low": 42.3, "team": "BAL", "bye": 13}, {"name": "Marvin Mims Jr.", "pos": "WR", "fpts": 71.3, "trueFpts": 54.7, "high": 57.7, "low": 57.7, "team": "DEN", "bye": 10}, {"name": "Malachi Fields", "pos": "WR", "fpts": 71.3, "trueFpts": 27.4, "high": 27.5, "low": 27.5, "team": "NYG", "bye": 8}, {"name": "Kyle Williams", "pos": "WR", "fpts": 70.5, "trueFpts": 18.8, "high": 19.4, "low": 19.4, "team": "NE", "bye": 11}, {"name": "Darius Slayton", "pos": "WR", "fpts": 68.2, "trueFpts": 78.7, "high": 80.1, "low": 68.8, "team": "NYG", "bye": 8}, {"name": "Xavier Legette", "pos": "WR", "fpts": 66.6, "trueFpts": 75.6, "high": 75.9, "low": 75.9, "team": "CAR", "bye": 5}, {"name": "Ted Hurst III", "pos": "WR", "fpts": 65.6, "trueFpts": 68.2, "high": 69.4, "low": 56.7, "team": "TB", "bye": 10}, {"name": "Tyquan Thornton", "pos": "WR", "fpts": 65.2, "trueFpts": 80.0, "high": 85.7, "low": 66.1, "team": "KC", "bye": 5}, {"name": "Mack Hollins", "pos": "WR", "fpts": 63.4, "trueFpts": 22.6, "high": 22.7, "low": 22.7, "team": "NE", "bye": 11}, {"name": "Chris Brazzell II", "pos": "WR", "fpts": 61.7, "team": "", "bye": null}, {"name": "Chris Bell", "pos": "WR", "fpts": 60.9, "trueFpts": 71.3, "high": 71.4, "low": 71.4, "team": "MIA", "bye": 6}, {"name": "Hollywood Brown", "pos": "WR", "fpts": 59.8, "trueFpts": 70.5, "high": 91.9, "low": 41.6, "team": "PHI", "bye": 10}, {"name": "Kayshon Boutte", "pos": "WR", "fpts": 58.3, "trueFpts": 96.3, "high": 98.1, "low": 86.1, "team": "BAL", "bye": 13}, {"name": "Cedric Tillman", "pos": "WR", "fpts": 57.0, "trueFpts": 45.3, "high": 68.2, "low": 13.6, "team": "CLE", "bye": 11}, {"name": "Luke McCaffrey", "pos": "WR", "fpts": 56.8, "trueFpts": 42.7, "high": 60.2, "low": 18.9, "team": "WAS", "bye": 7}, {"name": "Isaiah Bond", "pos": "WR", "fpts": 54.7, "trueFpts": 25.4, "high": 25.5, "low": 25.5, "team": "CLE", "bye": 11}, {"name": "Skyler Bell", "pos": "WR", "fpts": 54.5, "trueFpts": 35.0, "high": 35.2, "low": 35.2, "team": "BUF", "bye": 7}, {"name": "Brandon Aiyuk", "pos": "WR", "fpts": 54.5, "team": "", "bye": null}, {"name": "Caleb Douglas", "pos": "WR", "fpts": 53.4, "trueFpts": 71.3, "high": 67.6, "low": 65.7, "team": "MIA", "bye": 6}, {"name": "Tyreek Hill", "pos": "WR", "fpts": 49.9, "team": "", "bye": null}, {"name": "Andrei Iosivas", "pos": "WR", "fpts": 49.4, "trueFpts": 65.6, "high": 69.9, "low": 51.4, "team": "CIN", "bye": 6}, {"name": "Nick Westbrook-Ikhine", "pos": "WR", "fpts": 49.3, "trueFpts": 49.3, "high": 49.6, "low": 49.6, "team": "IND", "bye": 13}, {"name": "Calvin Austin III", "pos": "WR", "fpts": 49.1, "trueFpts": 49.1, "high": 69.8, "low": 19.7, "team": "NYG", "bye": 8}, {"name": "Jahdae Walker", "pos": "WR", "fpts": 48.5, "trueFpts": 48.5, "high": 73.8, "low": 14.3, "team": "CHI", "bye": 10}, {"name": "Demarcus Robinson", "pos": "WR", "fpts": 44.2, "trueFpts": 44.2, "high": 64.8, "low": 15.1, "team": "SF", "bye": 8}, {"name": "Tutu Atwell", "pos": "WR", "fpts": 43.2, "trueFpts": 43.2, "high": 43.2, "low": 43.2, "team": "MIA", "bye": 6}, {"name": "Kevin Coleman Jr.", "pos": "WR", "fpts": 41.2, "trueFpts": 41.2, "high": 41.3, "low": 41.3, "team": "MIA", "bye": 6}, {"name": "Kendrick Bourne", "pos": "WR", "fpts": 38.9, "trueFpts": 38.9, "high": 39.0, "low": 39.0, "team": "ARI", "bye": 14}, {"name": "Dyami Brown", "pos": "WR", "fpts": 38.8, "trueFpts": 38.8, "high": 39.0, "low": 39.0, "team": "WAS", "bye": 7}, {"name": "Treylon Burks", "pos": "WR", "fpts": 37.2, "trueFpts": 37.2, "high": 37.4, "low": 37.4, "team": "WAS", "bye": 7}, {"name": "Kalif Raymond", "pos": "WR", "fpts": 36.9, "trueFpts": 36.9, "high": 38.4, "low": 38.4, "team": "CHI", "bye": 10}, {"name": "Cyrus Allen", "pos": "WR", "fpts": 35.6, "trueFpts": 35.6, "high": 35.8, "low": 35.8, "team": "KC", "bye": 5}, {"name": "Bryce Lance", "pos": "WR", "fpts": 33.9, "trueFpts": 33.9, "high": 34.0, "low": 34.0, "team": "NO", "bye": 8}, {"name": "Jordan Whittington", "pos": "WR", "fpts": 33.6, "trueFpts": 33.6, "high": 34.1, "low": 34.1, "team": "LAR", "bye": 11}, {"name": "Colbie Young", "pos": "WR", "fpts": 32.3, "trueFpts": 32.3, "high": 32.4, "low": 32.4, "team": "CIN", "bye": 6}, {"name": "Jaylin Lane", "pos": "WR", "fpts": 28.4, "trueFpts": 28.4, "high": 31.1, "low": 31.1, "team": "WAS", "bye": 7}, {"name": "Xavier Hutchinson", "pos": "WR", "fpts": 27.3, "trueFpts": 27.3, "high": 27.4, "low": 27.4, "team": "HOU", "bye": 8}, {"name": "Dont'e Thornton Jr.", "pos": "WR", "fpts": 26.2, "trueFpts": 26.2, "high": 26.3, "low": 26.3, "team": "LV", "bye": 13}, {"name": "Odell Beckham Jr.", "pos": "WR", "fpts": 26.1, "trueFpts": 26.1, "high": 26.2, "low": 26.2, "team": "NYG", "bye": 8}, {"name": "Konata Mumpfield", "pos": "WR", "fpts": 24.3, "trueFpts": 24.3, "high": 24.3, "low": 24.3, "team": "LAR", "bye": 11}, {"name": "Roman Wilson", "pos": "WR", "fpts": 22.9, "trueFpts": 22.9, "high": 22.9, "low": 22.9, "team": "PIT", "bye": 9}, {"name": "Brenen Thompson", "pos": "WR", "fpts": 22.6, "trueFpts": 22.6, "high": 22.7, "low": 22.7, "team": "LAC", "bye": 7}, {"name": "Devontez Walker", "pos": "WR", "fpts": 21.8, "trueFpts": 21.8, "high": 21.9, "low": 21.9, "team": "BAL", "bye": 13}, {"name": "Tez Johnson", "pos": "WR", "fpts": 18.1, "trueFpts": 18.1, "high": 18.3, "low": 18.3, "team": "TB", "bye": 10}, {"name": "Jimmy Horn Jr.", "pos": "WR", "fpts": 17.8, "trueFpts": 17.8, "high": 17.9, "low": 17.9, "team": "CAR", "bye": 5}, {"name": "Jalen Royals", "pos": "WR", "fpts": 14.8, "trueFpts": 14.8, "high": 14.9, "low": 14.9, "team": "KC", "bye": 5}, {"name": "KeAndre Lambert-Smith", "pos": "WR", "fpts": 14.5, "trueFpts": 14.5, "high": 14.9, "low": 14.9, "team": "LAC", "bye": 7}, {"name": "Anthony Gould", "pos": "WR", "fpts": 12.8, "trueFpts": 12.8, "high": 14.3, "low": 14.3, "team": "IND", "bye": 13}, {"name": "Malik Benson", "pos": "WR", "fpts": 12.5, "trueFpts": 12.5, "high": 12.6, "low": 12.6, "team": "LV", "bye": 13}, {"name": "Greg Dortch", "pos": "WR", "fpts": 12.1, "trueFpts": 12.1, "high": 14.0, "low": 14.0, "team": "DET", "bye": 6}, {"name": "Bo Melton", "pos": "WR", "fpts": 10.0, "trueFpts": 10.0, "high": 10.3, "low": 10.3, "team": "GB", "bye": 11}, {"name": "Tyrell Shavers", "pos": "WR", "fpts": 9.0, "trueFpts": 9.0, "high": 9.0, "low": 9.0, "team": "BUF", "bye": 7}, {"name": "Derius Davis", "pos": "WR", "fpts": 8.6, "trueFpts": 8.6, "high": 9.9, "low": 9.9, "team": "LAC", "bye": 7}, {"name": "Malachi Corley", "pos": "WR", "fpts": 8.3, "trueFpts": 8.3, "high": 8.7, "low": 8.7, "team": "CLE", "bye": 11}, {"name": "Xavier Smith", "pos": "WR", "fpts": 8.1, "trueFpts": 8.1, "high": 9.8, "low": 9.8, "team": "LAR", "bye": 11}, {"name": "Isaiah Williams", "pos": "WR", "fpts": 8.1, "trueFpts": 8.1, "high": 11.6, "low": 11.6, "team": "NYJ", "bye": 13}, {"name": "Mitch Tinsley", "pos": "WR", "fpts": 8.1, "trueFpts": 8.1, "high": 8.1, "low": 8.1, "team": "CIN", "bye": 6}, {"name": "CJ Daniels", "pos": "WR", "fpts": 7.9, "trueFpts": 7.9, "high": 7.9, "low": 7.9, "team": "LAR", "bye": 11}, {"name": "Justin Watson", "pos": "WR", "fpts": 7.0, "trueFpts": 7.0, "high": 7.0, "low": 7.0, "team": "HOU", "bye": 8}, {"name": "Jonathan Mingo", "pos": "WR", "fpts": 6.9, "trueFpts": 6.9, "high": 7.0, "low": 7.0, "team": "DAL", "bye": 14}, {"name": "Tai Felton", "pos": "WR", "fpts": 6.9, "trueFpts": 6.9, "high": 7.2, "low": 7.2, "team": "MIN", "bye": 6}, {"name": "Darius Cooper", "pos": "WR", "fpts": 6.8, "trueFpts": 6.8, "high": 6.9, "low": 6.9, "team": "PHI", "bye": 10}, {"name": "Barion Brown", "pos": "WR", "fpts": 6.7, "trueFpts": 6.7, "high": 8.0, "low": 8.0, "team": "NO", "bye": 8}, {"name": "Laquon Treadwell", "pos": "WR", "fpts": 6.5, "trueFpts": 6.5, "high": 6.6, "low": 6.6, "team": "IND", "bye": 13}, {"name": "Reggie Virgil", "pos": "WR", "fpts": 6.4, "trueFpts": 6.4, "high": 6.4, "low": 6.4, "team": "ARI", "bye": 14}, {"name": "Brycen Tremayne", "pos": "WR", "fpts": 6.1, "trueFpts": 6.1, "high": 6.3, "low": 6.3, "team": "CAR", "bye": 5}, {"name": "Arian Smith", "pos": "WR", "fpts": 3.4, "trueFpts": 3.4, "high": 3.5, "low": 3.5, "team": "NYJ", "bye": 13}, {"name": "Ben Skowronek", "pos": "WR", "fpts": 3.0, "trueFpts": 3.0, "high": 3.0, "low": 3.0, "team": "PIT", "bye": 9}, {"name": "Kameron Johnson", "pos": "WR", "fpts": 1.8, "trueFpts": 1.8, "high": 3.6, "low": 3.6, "team": "TB", "bye": 10}, {"name": "Kaden Wetjen", "pos": "WR", "fpts": 1.6, "trueFpts": 1.6, "high": 4.1, "low": 4.1, "team": "PIT", "bye": 9}, {"name": "David Moore", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 0.0, "low": 0.0, "team": "CAR", "bye": 5}, {"name": "Braxton Berrios", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 2.5, "low": 2.5, "team": "NYG", "bye": 8}, {"name": "Devin Duvernay", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 0.8, "low": 0.8, "team": "ARI", "bye": 14}, {"name": "Mason Kinsey", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 0.1, "low": 0.1, "team": "TEN", "bye": 9}, {"name": "Michael Bandy", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 0.2, "low": 0.2, "team": "DEN", "bye": 10}, {"name": "Skyy Moore", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 0.4, "low": 0.4, "team": "GB", "bye": 11}, {"name": "Britain Covey", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 1.7, "low": 1.7, "team": "PHI", "bye": 10}, {"name": "Dareke Young", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 0.4, "low": 0.4, "team": "LV", "bye": 13}, {"name": "Jacob Cowing", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 1.1, "low": 1.1, "team": "SF", "bye": 8}, {"name": "Charlie Jones", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 2.5, "low": 2.5, "team": "CIN", "bye": 6}, {"name": "Jalen Brooks", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 0.3, "low": 0.3, "team": "ARI", "bye": 14}, {"name": "Nikko Remigio", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 1.4, "low": 1.4, "team": "KC", "bye": 5}, {"name": "Jeshaun Jones", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 0.1, "low": 0.1, "team": "MIN", "bye": 6}, {"name": "Mason Tipton", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 0.7, "low": 0.7, "team": "NO", "bye": 8}, {"name": "Efton Chism III", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 0.5, "low": 0.5, "team": "NE", "bye": 11}, {"name": "LaJohntay Wester", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 1.9, "low": 1.9, "team": "BAL", "bye": 13}, {"name": "Ke'Shawn Williams", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 1.0, "low": 1.0, "team": "CIN", "bye": 6}, {"name": "Myles Price", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 2.0, "low": 2.0, "team": "MIN", "bye": 6}, {"name": "Gage Larvadain", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 0.7, "low": 0.7, "team": "CLE", "bye": 11}, {"name": "Josh Cameron", "pos": "WR", "fpts": 0.0, "trueFpts": 0.0, "high": 0.3, "low": 0.3, "team": "JAC", "bye": 7}];
+
+const STARTER_N = { QB:10, RB:20, WR:30, TE:10, K:10 };
+const FLEX_N = { RB:33, WR:39 };
+// Positions with exactly 1 starter per team and no FLEX sharing -- their replacement level should
+// reflect how many teams are ACTUALLY still shopping for one, not a fixed count assuming nobody's
+// filled theirs yet.
+const SINGLE_SLOT_POS = ['QB', 'TE', 'K'];
+const ROSTER_SLOTS = ['QB','RB','RB','WR','WR','WR','TE','FLEX','FLEX','K'];
+const STORAGE_KEY = 'ff-draft-live-2026-v2';
+
+const MY_TEAM = 'IanCollis4';
+const TEAMS = [
+  { id: 'grwin15', name: 'grwin15' },
+  { id: 'Dillard09', name: 'Dillard09' },
+  { id: 'LackDaddy10', name: 'LackDaddy10' },
+  { id: 'RedSled', name: 'RedSled' },
+  { id: 'JCTorres97', name: 'JCTorres97' },
+  { id: 'mmurphy2015', name: 'mmurphy2015' },
+  { id: 'IanCollis4', name: 'IanCollis4 (you)' },
+  { id: 'Alegre12', name: 'Alegre12' },
+  { id: 'RJMess', name: 'RJMess' },
+  { id: 'TheDayDay69', name: 'TheDayDay69' },
+];
+const TEAM_NAME = Object.fromEntries(TEAMS.map(t => [t.id, t.name]));
+
+const PRESET_KEEPERS = [
+  { name: 'Amon-Ra St. Brown', team: 'grwin15' },
+  { name: 'Malik Nabers', team: 'grwin15' },
+  { name: 'Jahmyr Gibbs', team: 'Dillard09' },
+  { name: 'Ashton Jeanty', team: 'Dillard09' },
+  { name: 'Jonathan Taylor', team: 'LackDaddy10' },
+  { name: 'Josh Allen', team: 'LackDaddy10' },
+  { name: 'Saquon Barkley', team: 'RedSled' },
+  { name: 'James Cook III', team: 'RedSled' },
+  { name: 'Bijan Robinson', team: 'JCTorres97' },
+  { name: 'Kyren Williams', team: 'JCTorres97' },
+  { name: 'Justin Jefferson', team: 'mmurphy2015' },
+  { name: 'Drake London', team: 'mmurphy2015' },
+  { name: 'Derrick Henry', team: 'Alegre12' },
+  { name: 'Chase Brown', team: 'Alegre12' },
+  { name: 'CeeDee Lamb', team: 'RJMess' },
+  { name: 'Puka Nacua', team: 'RJMess' },
+  { name: "Ja'Marr Chase", team: 'TheDayDay69' },
+  { name: 'Jaxon Smith-Njigba', team: 'TheDayDay69' },
+  { name: "De'Von Achane", team: MY_TEAM },
+  { name: 'Omarion Hampton', team: MY_TEAM },
+];
+
+// Real snake draft order for this league (10 teams, 17 rounds).
+const DRAFT_ORDER = ['mmurphy2015','JCTorres97','RJMess','Alegre12','LackDaddy10','TheDayDay69','Dillard09','grwin15','IanCollis4','RedSled'];
+const TOTAL_ROUNDS = 17;
+const SNAKE_ORDER = [];
+// Round 8 pick trades: LackDaddy10's pick -> RJMess (part of the Allen keeper trade),
+// IanCollis4's (mine) -> TheDayDay69 (part of the McBride-for-Hampton trade earlier this season).
+// Receiving teams get 2 picks in round 8 (their own slot + the acquired one); trading teams get 0.
+const ROUND8_PICK_TRADES = { 'LackDaddy10': 'RJMess', 'IanCollis4': 'TheDayDay69' };
+for (let r = 1; r <= TOTAL_ROUNDS; r++){
+  const roundTeams = (r % 2 === 1) ? DRAFT_ORDER : [...DRAFT_ORDER].reverse();
+  const finalTeams = (r === 8) ? roundTeams.map(t => ROUND8_PICK_TRADES[t] || t) : roundTeams;
+  SNAKE_ORDER.push(...finalTeams);
+}
+
+// Team tendency model (position lean multipliers), built from real draft-history review this session.
+// This is a stand-in until real Sleeper ADP is loaded -- market rank below currently uses League Value order.
+// Team tendency model (position lean multipliers), built from real 2025 draft-history review.
+// Updated after separating keeper-locked R1-2 picks from live R3-5 picks: RedSled's RB lean
+// already self-corrects via the need-discount once they're full (confirmed by their real R4-5
+// pivot to WR, no change needed there). RJMess's RB avoidance looked overstated once isolated to
+// live picks -- softened toward neutral. Dillard09 QB lean is new and tentative (single pick).
+// Team tendency model (position lean multipliers), verified against real 2025 ADP data
+// (fantasyfootballcalculator.com archive) for rounds 3-6 of the live draft, keeper rounds 1-2 excluded.
+// Personal risk-adjustment: real, researched games-missed-rate gap between positions (RB misses
+// meaningfully more games than WR/QB/TE across multiple independent studies -- FantasyPros, Draft
+// Sharks, Footballguys). This is DELIBERATELY separate from League Value/My Value and never touches
+// blendedScore/TEAM_LEAN/the simulation engine below -- those must keep predicting what your league's
+// real managers actually do (verified against 3 years of draft history, which shows they do NOT
+// discount RB this way), not what a personally risk-adjusted view would prefer.
+const FRAGILITY_DISCOUNT = { RB: 0.065, WR: 0.02, QB: 0.02, TE: 0.03, K: 0.0 };
+
+const TEAM_LEAN = {
+  RedSled: { RB: 1.6 },
+  grwin15: { TE: 1.5 },
+  Dillard09: { RB: 1.2 }, // QB lean removed -- Daniels pick was verified +12.3 (real value, not a reach)
+  JCTorres97: { RB: 1.15 }, // QB lean removed -- was based on assumed Hurts keeper (repeat pattern), but real 2026 keeper is Williams, not Hurts, contradicting that evidence
+  LackDaddy10: { QB: 1.4 },
+  mmurphy2015: { RB: 1.15 },
+  Alegre12: { RB: 1.15, TE: 1.3 }, // TE restored -- 2026 Bowers pick (R3, even earlier than 2025's Kelce reach) makes this 2 years of real evidence vs 1 year against
+  RJMess: { WR: 1.3, RB: 0.9 },
+  TheDayDay69: { WR: 1.2 },
+};
+// Only QB/TE/K need independent min/max here -- RB/WR share the FLEX pool and are handled
+// by needState() below, the same logic already used for your own roster.
+const GENERIC_MAX = { QB: 2, TE: 2, K: 1 };
+const GENERIC_MIN = { QB: 1, TE: 1, K: 1 };
+
+// Real Sleeper draft-room rankings (pulled Aug 18, 2026). Anything not in this map falls back
+// to League Value-derived ordering, placed below every real-ranked player.
+const SLEEPER_RANK = { "Jahmyr Gibbs": 1.0, "Bijan Robinson": 2.0, "Ja'Marr Chase": 3.0, "Puka Nacua": 4.0, "Christian McCaffrey": 5.0, "Jonathan Taylor": 6.0, "Amon-Ra St. Brown": 7.0, "Jaxon Smith-Njigba": 8.0, "James Cook III": 9.0, "CeeDee Lamb": 10.0, "Ashton Jeanty": 11.0, "Justin Jefferson": 12.0, "Saquon Barkley": 13.0, "De'Von Achane": 14.0, "Chase Brown": 15.0, "Omarion Hampton": 16.0, "Derrick Henry": 17.0, "Kenneth Walker III": 18.0, "A.J. Brown": 19.0, "Drake London": 20.0, "Brock Bowers": 21.0, "Josh Allen": 22.0, "Trey McBride": 23.0, "Nico Collins": 24.0, "Jeremiyah Love": 25.0, "George Pickens": 26.0, "Kyren Williams": 27.0, "Rashee Rice": 28.0, "Josh Jacobs": 29.0, "Breece Hall": 30.0, "Malik Nabers": 31.0, "Chris Olave": 32.0, "Javonte Williams": 33.0, "DeVonta Smith": 34.4, "Lamar Jackson": 35.9, "Tetairoa McMillan": 35.9, "Cam Skattebo": 37.8, "Tee Higgins": 38.7, "Emeka Egbuka": 39.8, "Ladd McConkey": 40.1, "Travis Etienne Jr.": 41.5, "Zay Flowers": 41.8, "Garrett Wilson": 43.5, "Colston Loveland": 44.2, "Bucky Irving": 45.7, "Quinshon Judkins": 46.3, "Jaylen Waddle": 47.1, "TreVeyon Henderson": 47.8, "David Montgomery": 49.7, "Tyler Warren": 50.2, "Drake Maye": 51.6, "D'Andre Swift": 52.8, "Joe Burrow": 53.1, "Terry McLaurin": 53.5, "Luther Burden III": 55.1, "DJ Moore": 56.2, "Jameson Williams": 57.0, "Davante Adams": 58.6, "Bhayshul Tuten": 59.7, "Mike Evans": 59.9, "Jadarian Price": 61.9, "Rome Odunze": 62.4, "Jalen Hurts": 63.7, "Sam LaPorta": 64.8, "Jayden Daniels": 65.5, "Carnell Tate": 65.9, "Tucker Kraft": 67.2, "Christian Watson": 68.6, "Jaylen Warren": 69.4, "Brian Thomas Jr.": 70.8, "Kyle Pitts Sr.": 71.0, "Harold Fannin Jr.": 71.4, "Marvin Harrison Jr.": 73.8, "Chuba Hubbard": 74.1, "Parker Washington": 75.8, "Caleb Williams": 76.1, "Rhamondre Stevenson": 77.8, "DK Metcalf": 77.9, "Jordyn Tyson": 79.1, "Justin Herbert": 80.4, "Tony Pollard": 81.5, "RJ Harvey": 82.7, "Rico Dowdle": 83.7, "Courtland Sutton": 83.9, "Makai Lemon": 85.3, "Kyle Monangai": 86.1, "J.K. Dobbins": 87.5, "Michael Wilson": 88.1, "Dak Prescott": 89.4, "George Kittle": 89.7, "Jonathon Brooks": 91.7, "Alec Pierce": 92.6, "Blake Corum": 93.9, "Dalton Kincaid": 94.0, "Jaxson Dart": 95.1, "Chris Godwin Jr.": 95.2, "Trevor Lawrence": 97.4, "Travis Kelce": 98.1, "Jacory Croskey-Merritt": 99.5, "Michael Pittman Jr.": 100.3, "Jordan Addison": 101.9, "Quentin Johnston": 102.0, "Jayden Reed": 103.9, "Jordan Mason": 104.4, "Patrick Mahomes II": 105.6, "Jake Ferguson": 106.9, "Aaron Jones Sr.": 107.7, "Kenny Gainwell": 108.0, "Matthew Stafford": 109.7, "Josh Downs": 110.8, "Jakobi Meyers": 111.7, "Wan'Dale Robinson": 112.3, "KC Concepcion": 113.5, "Isaiah Likely": 113.7, "Rachaad White": 115.5, "Stefon Diggs": 116.8, "Brock Purdy": 117.8, "Bo Nix": 118.9, "Dallas Goedert": 119.3, "Mark Andrews": 119.7, "Xavier Worthy": 121.3, "Romeo Doubs": 122.0, "Matthew Golden": 123.0, "Oronde Gadsden II": 124.0, "Zach Charbonnet": 125.0, "Jayden Higgins": 126.0, "Tyler Allgeier": 127.0, "Tyrone Tracy Jr.": 128.0, "Jared Goff": 129.0, "Deebo Samuel Sr.": 130.0, "Khalil Shakir": 131.0, "Brandon Aubrey": 132.0, "Cameron Dicker": 133.0, "Jason Myers": 134.0, "Chris Rodriguez Jr.": 135.0, "Ka'imi Fairbairn": 136.0, "De'Zhaun Stribling": 137.0, "Jonah Coleman": 138.0, "Cam Little": 139.0, "Hunter Henry": 140.0, "Jalen Coker": 141.0, "Woody Marks": 142.0, "Alvin Kamara": 143.0, "Baker Mayfield": 144.0, "Rashid Shaheed": 145.0, "Kyler Murray": 146.0, "Brenton Strange": 147.0, "Jordan Love": 148.0, "Harrison Mevis": 149.0, "Denzel Boston": 150.0, "Kenyon Sadiq": 151.0, "Brian Robinson Jr.": 152.0, "Keaton Mitchell": 153.0, "Jake Bates": 154.0, "Ja'Kobi Lane": 155.0, "Tank Bigsby": 156.0, "Tyjae Spears": 157.0, "Tyler Shough": 158.0, "Sam Darnold": 159.0, "Eddy Pineiro": 160.0, "Isiah Pacheco": 161.0, "Jalen Nailor": 162.0 };
+
+let drafted = {};
+let pickOrder = [];
+let activeTab = 'ALL';
+let searchTerm = '';
+let viewMode = 'league'; // 'league' or 'mine'
+let rosterViewTeam = MY_TEAM;
+let showDrafted = false;
+
+// personal roster-need model (RB/WR only) -- always keyed to MY_TEAM, regardless of which roster is being viewed
+const NEED_MIN = { RB: 2, WR: 3 };
+const NEED_FLEX_SHARED = 2;
+const NEED_MAX = { RB: NEED_MIN.RB + NEED_FLEX_SHARED, WR: NEED_MIN.WR + NEED_FLEX_SHARED };
+
+function myCounts(){
+  const counts = { RB: 0, WR: 0, QB: 0, TE: 0 };
+  pickOrder.forEach(p => {
+    if (p.by !== MY_TEAM) return;
+    const pl = PLAYERS.find(x => x.name === p.name);
+    if (pl && counts.hasOwnProperty(pl.pos)) counts[pl.pos]++;
+  });
+  return counts;
+}
+
+function needState(pos, counts){
+  if (!NEED_MIN[pos]) return null;
+  const have = counts[pos] || 0;
+  const remMin = Math.max(0, NEED_MIN[pos] - have);
+  const remMax = Math.max(0, NEED_MAX[pos] - have);
+  let zone, mult;
+  if (remMin > 0){ zone = 'urgent'; mult = 1 + 0.15 * remMin; }
+  else if (remMax > 0){ zone = 'neutral'; mult = 1.0; }
+  else { zone = 'discount'; mult = 0.4; }
+  return { have, remMin, remMax, zone, mult };
+}
+
+// Single-slot positions (QB/TE) have no FLEX to share, but My Value should still reflect need the
+// same way RB/WR does -- boosted when you don't have one yet, discounted once you're stocked past
+// what you'd realistically start/stream. Deliberately separate from needState()/NEED_MIN so this
+// never touches teamNeedMult()'s opponent-modeling path, which must keep using its own GENERIC_MIN/MAX logic.
+const MY_SINGLE_SLOT_MIN = { QB: 1, TE: 1 };
+const MY_SINGLE_SLOT_MAX = { QB: 2, TE: 2 };
+function mySingleSlotNeedState(pos, counts){
+  if (!MY_SINGLE_SLOT_MIN[pos]) return null;
+  const have = counts[pos] || 0;
+  const remMin = Math.max(0, MY_SINGLE_SLOT_MIN[pos] - have);
+  const remMax = Math.max(0, MY_SINGLE_SLOT_MAX[pos] - have);
+  let zone, mult;
+  if (remMin > 0){ zone = 'urgent'; mult = 1 + 0.15 * remMin; }
+  else if (remMax > 0){ zone = 'neutral'; mult = 1.0; }
+  else { zone = 'discount'; mult = 0.4; }
+  return { have, remMin, remMax, zone, mult };
+}
+
+// For single-slot positions (QB/TE), the naive "10th available" baseline assumes all 10 teams
+// still need one -- but once some teams already have their starter, the real remaining demand is
+// smaller than that. Using the true number of teams still shopping for the position is a more
+// accurate replacement level than a fixed count that ignores what's already been filled.
+function teamsStillNeeding(pos){
+  let filled = 0;
+  TEAMS.forEach(t => {
+    const have = pickOrder.some(p => p.by === t.id && (PLAYERS.find(x => x.name === p.name) || {}).pos === pos);
+    if (have) filled++;
+  });
+  return Math.max(1, TEAMS.length - filled);
+}
+
+// Same idea for RB/WR, but accounting for the shared FLEX pool: guaranteed slots are a clean
+// yes/no per team, but FLEX capacity has to be split between the two positions. Uses the same
+// 13:9 RB:WR ratio implied by the original static FLEX_N constants (33/39), applied to whatever
+// FLEX capacity is ACTUALLY still open across the league right now, not assumed to be untouched.
+function remainingFlexSharedN(pos){
+  const NEED_MIN_LOCAL = { RB: 2, WR: 3 };
+  let guaranteedRemaining = 0;
+  let flexCapacityRemaining = 0;
+  TEAMS.forEach(t => {
+    const counts = teamPositionCounts(t.id);
+    guaranteedRemaining += Math.max(0, NEED_MIN_LOCAL[pos] - (counts[pos] || 0));
+    const excessRB = Math.max(0, (counts.RB || 0) - NEED_MIN_LOCAL.RB);
+    const excessWR = Math.max(0, (counts.WR || 0) - NEED_MIN_LOCAL.WR);
+    flexCapacityRemaining += Math.max(0, NEED_FLEX_SHARED - (excessRB + excessWR));
+  });
+  const RB_SHARE = 13 / 22, WR_SHARE = 9 / 22; // matches the original FLEX_N(33,39) implied split
+  const share = pos === 'RB' ? RB_SHARE : WR_SHARE;
+  return Math.max(1, guaranteedRemaining + Math.round(flexCapacityRemaining * share));
+}
+
+function baselineFor(pos, useFlex){
+  const N = useFlex ? remainingFlexSharedN(pos) : (SINGLE_SLOT_POS.includes(pos) ? teamsStillNeeding(pos) : STARTER_N[pos]);
+  const remaining = PLAYERS.filter(p => p.pos === pos && !drafted[p.name])
+    .sort((a,b) => b.fpts - a.fpts);
+  if (remaining.length === 0) return 0;
+  const idx = Math.min(N - 1, remaining.length - 1);
+  return remaining[idx].fpts;
+}
+
+function computeValues(){
+  const baselines = {};
+  ['QB','RB','WR','TE','K'].forEach(pos => {
+    baselines[pos] = { vols: baselineFor(pos,false) };
+    if (FLEX_N[pos]) baselines[pos].volf = baselineFor(pos,true);
+  });
+  const counts = myCounts();
+  return PLAYERS.map(p => {
+    const useFlex = !!FLEX_N[p.pos];
+    const base = useFlex ? baselines[p.pos].volf : baselines[p.pos].vols;
+    const value = Math.round((p.fpts - base) * 10) / 10;
+    const ns = needState(p.pos, counts) || mySingleSlotNeedState(p.pos, counts);
+    const myValue = ns ? Math.round(value * ns.mult * 10) / 10 : value;
+    const rangePct = (p.high != null && p.low != null && (p.trueFpts || p.fpts) > 0) ? (p.high - p.low) / (p.trueFpts || p.fpts) : null;
+    const riskAdjValue = Math.round(myValue * (1 - (FRAGILITY_DISCOUNT[p.pos] || 0)) * 10) / 10;
+    return { ...p, value, myValue, riskAdjValue, needZone: ns ? ns.zone : null, rangePct, baselines: baselines[p.pos] };
+  });
+}
+
+function livePickIndex(){
+  return pickOrder.filter(p => !p.isPreset).length;
+}
+
+function picksUntilTurnFrom(startIdx){
+  let idx = startIdx;
+  if (idx >= SNAKE_ORDER.length) return { count: 0, teams: [] };
+  if (SNAKE_ORDER[idx] === MY_TEAM) return { count: 0, teams: [] };
+  const teams = [];
+  let i = idx;
+  while (i < SNAKE_ORDER.length && SNAKE_ORDER[i] !== MY_TEAM){
+    teams.push(SNAKE_ORDER[i]);
+    i++;
+  }
+  return { count: teams.length, teams };
+}
+
+function picksUntilMyNextTurn(){
+  return picksUntilTurnFrom(livePickIndex());
+}
+
+// For the Survives column / simulation specifically: if it's currently my turn, forecast the
+// window AFTER this pick (i.e. what happens once I've picked and I'm waiting for my next turn),
+// rather than showing a meaningless zero-length window.
+function simulationWindow(){
+  const idx = livePickIndex();
+  const current = picksUntilTurnFrom(idx);
+  if (current.count > 0) return { window: current, startPick: idx + 1 };
+  return { window: picksUntilTurnFrom(idx + 1), startPick: idx + 2 };
+}
+
+function teamPositionCounts(teamId){
+  const counts = { QB:0, RB:0, WR:0, TE:0, K:0 };
+  pickOrder.forEach(p => {
+    if (p.by !== teamId) return;
+    const pl = PLAYERS.find(x => x.name === p.name);
+    if (pl && counts.hasOwnProperty(pl.pos)) counts[pl.pos]++;
+  });
+  return counts;
+}
+
+function teamNeedMult(teamId, pos, counts){
+  if (NEED_MIN.hasOwnProperty(pos)){
+    // RB/WR share the FLEX pool -- reuse the exact same zone logic as your own roster.
+    return needState(pos, counts).mult;
+  }
+  const have = counts[pos] || 0;
+  if (have >= GENERIC_MAX[pos]) return 0.15;
+  if (have < GENERIC_MIN[pos]) return 1.3;
+  // Real, observed behavior: plenty of teams actively grab a 2nd QB, sometimes ahead of an
+  // open RB/WR need -- treat that as a genuine boost, not just neutral, in the OPPONENT model only.
+  // This is deliberately separate from mySingleSlotNeedState/My Value, which reflects the user's
+  // own roster need, not other teams' drafting habits.
+  if (pos === 'QB' && have === GENERIC_MIN[pos]) return 1.2;
+  return 1.0;
+}
+
+// Blend weight for League Value vs Sleeper rank, as a function of overall pick number.
+// Mostly League Value through pick 60, mostly Sleeper past pick 80, linear transition between.
+// Blend weight for League Value vs Sleeper rank, as a function of overall pick number.
+// Mostly Sleeper (with a little League Value) early, mostly League Value (with a little Sleeper) late.
+// This ONLY affects the market-rank input to the Survives/Next Pick/Risk Radar simulation --
+// it never touches League Value or My Value themselves, which stay pure FPTS/VOLS/VOLF always.
+function leagueValueWeight(pickNumber){
+  if (pickNumber <= 60) return 0.15;
+  if (pickNumber >= 80) return 1.0;
+  return 0.15 + (pickNumber - 60) / 20 * 0.85;
+}
+
+function buildRankMaps(availablePlayers){
+  const byValue = [...availablePlayers].sort((a,b) => b.value - a.value);
+  const lvRank = {};
+  byValue.forEach((p,i) => lvRank[p.name] = i+1);
+
+  const worstSleeperRank = Math.max(0, ...Object.values(SLEEPER_RANK));
+  const unranked = byValue.filter(p => !SLEEPER_RANK.hasOwnProperty(p.name));
+  const slRank = {};
+  availablePlayers.forEach(p => {
+    if (SLEEPER_RANK.hasOwnProperty(p.name)) slRank[p.name] = SLEEPER_RANK[p.name];
+  });
+  unranked.forEach((p,i) => slRank[p.name] = worstSleeperRank + 1 + i);
+  return { lvRank, slRank };
+}
+
+function blendedScore(lvRank, slRank, p, pickNumber){
+  const wFP = leagueValueWeight(pickNumber);
+  const wSL = 1 - wFP;
+  const blendedRank = wFP * lvRank[p.name] + wSL * slRank[p.name];
+  return 10000 / Math.max(1, blendedRank);
+}
+
+// Monte-Carlo simulate the picks between now and my next turn.
+function simulateForecast(availablePlayers, teamsInWindow, runs, startingPickNumber){
+  const survivalCount = {};
+  const bestPickCount = {};
+  const positionReplacementSum = { QB: 0, RB: 0, WR: 0, TE: 0, K: 0 };
+  availablePlayers.forEach(p => { survivalCount[p.name] = 0; bestPickCount[p.name] = 0; });
+  if (teamsInWindow.length === 0){
+    // it's already your turn -- the "likely next pick" is just the best available player right now.
+    availablePlayers.forEach(p => survivalCount[p.name] = runs);
+    let top = null, topVal = -Infinity;
+    availablePlayers.forEach(p => { if (p.myValue > topVal){ topVal = p.myValue; top = p; } });
+    if (top) bestPickCount[top.name] = runs;
+    ['QB','RB','WR','TE','K'].forEach(pos => {
+      const bestAtPos = availablePlayers.filter(p => p.pos === pos).sort((a,b)=>b.myValue-a.myValue)[0];
+      positionReplacementSum[pos] = bestAtPos ? bestAtPos.myValue * runs : 0;
+    });
+    const positionReplacementAvg = {};
+    Object.keys(positionReplacementSum).forEach(pos => positionReplacementAvg[pos] = positionReplacementSum[pos] / runs);
+    return { survivalCount, bestPickCount, positionReplacementAvg };
+  }
+  const baseCounts = {};
+  teamsInWindow.forEach(t => { if(!baseCounts[t]) baseCounts[t] = teamPositionCounts(t); });
+  const { lvRank, slRank } = buildRankMaps(availablePlayers);
+
+  for (let run = 0; run < runs; run++){
+    const takenThisRun = new Set();
+    const runCounts = {};
+    Object.keys(baseCounts).forEach(t => runCounts[t] = {...baseCounts[t]});
+    teamsInWindow.forEach((team, stepIdx) => {
+      const pickNumber = startingPickNumber + stepIdx;
+      let best = null, bestScore = -Infinity;
+      for (const p of availablePlayers){
+        if (takenThisRun.has(p.name)) continue;
+        const lean = (TEAM_LEAN[team] && TEAM_LEAN[team][p.pos]) || 1.0;
+        const needMult = teamNeedMult(team, p.pos, runCounts[team]);
+        const noise = 0.75 + Math.random() * 0.5;
+        const score = blendedScore(lvRank, slRank, p, pickNumber) * lean * needMult * noise;
+        if (score > bestScore){ bestScore = score; best = p; }
+      }
+      if (best){
+        takenThisRun.add(best.name);
+        runCounts[team][best.pos] = (runCounts[team][best.pos]||0) + 1;
+      }
+    });
+    // Track, per run, the best surviving player at EACH position -- this is "what I'd actually
+    // still have to choose from at that position by my real next turn," not just today's 2nd-best.
+    const bestSurvivorByPos = { QB: null, RB: null, WR: null, TE: null, K: null };
+    let myTop = null, myTopVal = -Infinity;
+    availablePlayers.forEach(p => {
+      if (!takenThisRun.has(p.name)){
+        survivalCount[p.name]++;
+        if (p.myValue > myTopVal){ myTopVal = p.myValue; myTop = p; }
+        if (!bestSurvivorByPos[p.pos] || p.myValue > bestSurvivorByPos[p.pos].myValue) bestSurvivorByPos[p.pos] = p;
+      }
+    });
+    if (myTop) bestPickCount[myTop.name]++;
+    Object.keys(bestSurvivorByPos).forEach(pos => {
+      if (bestSurvivorByPos[pos]) positionReplacementSum[pos] += bestSurvivorByPos[pos].myValue;
+    });
+  }
+  const positionReplacementAvg = {};
+  Object.keys(positionReplacementSum).forEach(pos => positionReplacementAvg[pos] = positionReplacementSum[pos] / runs);
+  return { survivalCount, bestPickCount, positionReplacementAvg };
+}
+
+function myByeCounts(){
+  const counts = {};
+  pickOrder.forEach(p => {
+    if (p.by !== MY_TEAM) return;
+    const pl = PLAYERS.find(x => x.name === p.name);
+    if (pl && pl.bye) counts[pl.bye] = (counts[pl.bye] || 0) + 1;
+  });
+  return counts;
+}
+
+function renderTurnBanner(){
+  const el = document.getElementById('turnBanner');
+  const w = picksUntilMyNextTurn();
+  const simW = simulationWindow();
+  if (w.count === 0){
+    const teamCounts = {};
+    simW.window.teams.forEach(t => teamCounts[t] = (teamCounts[t]||0)+1);
+    const summary = Object.entries(teamCounts).map(([t,c]) => TEAM_NAME[t] + (c>1?` x${c}`:'')).join(', ');
+    const afterNote = simW.window.count > 0
+      ? ` "Survives" now shows odds of lasting until your turn AFTER this pick (${simW.window.count} picks away: ${summary}) — use it to decide who to grab now vs who can wait.`
+      : '';
+    el.innerHTML = `<div class="turnbanner">🎯 IT'S YOUR TURN (or next live pick is yours).${afterNote}</div>`;
+  } else {
+    const teamCounts = {};
+    w.teams.forEach(t => teamCounts[t] = (teamCounts[t]||0)+1);
+    const summary = Object.entries(teamCounts).map(([t,c]) => TEAM_NAME[t] + (c>1?` x${c}`:'')).join(', ');
+    el.innerHTML = `<div class="turnbanner">${w.count} pick${w.count===1?'':'s'} until your next turn — ${summary}. "Survives" column blends real Sleeper rank and League Value (mostly Sleeper through pick 60, mostly League Value past pick 80, linear transition between), 250 simulations.</div>`;
+  }
+}
+
+let showRadar = false;
+
+function renderRadar(fullAvailable, survivalCounts, SIM_RUNS, simWinCount){
+  const el = document.getElementById('radarPanel');
+  if (!showRadar){ el.style.display = 'none'; el.innerHTML = ''; return; }
+  el.style.display = 'block';
+
+  if (simWinCount === 0){
+    el.innerHTML = `<div class="radarwrap"><h3>Risk Radar</h3><div class="radarsub">No forecast window right now (nothing left to wait through).</div></div>`;
+    return;
+  }
+
+  const candidates = fullAvailable.filter(p => survivalCounts.hasOwnProperty(p.name)).slice(0, 18);
+  if (candidates.length === 0){
+    el.innerHTML = `<div class="radarwrap"><h3>Risk Radar</h3><div class="radarsub">Not enough data yet.</div></div>`;
+    return;
+  }
+
+  const W = 760, H = 340, padL = 50, padR = 30, padT = 30, padB = 40;
+  const values = candidates.map(p => p.value);
+  const minV = Math.min(...values), maxV = Math.max(...values);
+  const xScale = v => padL + (maxV === minV ? 0.5 : (v - minV) / (maxV - minV)) * (W - padL - padR);
+  const yScale = pct => padT + (pct / 100) * (H - padT - padB); // 0% (urgent) at top, 100% (safe) at bottom
+
+  const posColor = { QB:'#B79DE8', RB:'#5FBF77', WR:'#5C8AD6', TE:'#E8B04B', K:'#8A93A3' };
+
+  let dots = '';
+  candidates.forEach(p => {
+    const pct = Math.round(100 * survivalCounts[p.name] / SIM_RUNS);
+    const x = xScale(p.value);
+    const y = yScale(pct);
+    const color = posColor[p.pos] || '#8A93A3';
+    const shortName = p.name.length > 14 ? p.name.split(' ').map((w,i,a)=> i===0&&a.length>1 ? w[0]+'.' : w).join(' ') : p.name;
+    dots += `<g class="radar-dot" data-tip="${p.name} (${p.pos}) — Value ${p.value.toFixed(1)}, Survives ${pct}%">
+      <circle cx="${x}" cy="${y}" r="6" fill="${color}" fill-opacity="0.85" stroke="${color}"/>
+      <text class="radar-label" x="${x+8}" y="${y+3}">${shortName}</text>
+    </g>`;
+  });
+
+  const midX = (padL + (W-padR)) / 2;
+  const midY = yScale(50);
+
+  el.innerHTML = `<div class="radarwrap">
+    <h3>Risk Radar</h3>
+    <div class="radarsub">Value (right = better) vs. odds of surviving to your next turn (top = about to vanish, bottom = safe to wait). Hover a dot for details.</div>
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;">
+      <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#2E3542"/>
+      <line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#2E3542"/>
+      <line x1="${midX}" y1="${padT}" x2="${midX}" y2="${H-padB}" stroke="#2E3542" stroke-dasharray="4,4"/>
+      <line x1="${padL}" y1="${midY}" x2="${W-padR}" y2="${midY}" stroke="#2E3542" stroke-dasharray="4,4"/>
+      <text class="radar-quadrant-label" x="${W-padR-8}" y="${padT+16}" text-anchor="end">TAKE NOW</text>
+      <text class="radar-quadrant-label" x="${W-padR-8}" y="${H-padB-8}" text-anchor="end">SAFE TO WAIT</text>
+      <text class="radar-label" x="${padL}" y="${H-padB+16}">← Lower Value</text>
+      <text class="radar-label" x="${W-padR}" y="${H-padB+16}" text-anchor="end">Higher Value →</text>
+      <text class="radar-label" x="${padL-6}" y="${padT+4}" text-anchor="end">Urgent</text>
+      <text class="radar-label" x="${padL-6}" y="${H-padB}" text-anchor="end">Safe</text>
+      ${dots}
+    </svg>
+  </div>`;
+
+  el.querySelectorAll('.radar-dot').forEach(dot => {
+    dot.addEventListener('mouseenter', () => { dot.setAttribute('title', dot.dataset.tip); });
+  });
+  // native title tooltips as a simple, dependency-free hover
+  el.querySelectorAll('.radar-dot').forEach(dot => {
+    const t = document.createElementNS('http://www.w3.org/2000/svg','title');
+    t.textContent = dot.dataset.tip;
+    dot.appendChild(t);
+  });
+}
+
+function renderRunAlert(){
+  const el = document.getElementById('runAlert');
+  const recent = pickOrder.slice(-5);
+  if (recent.length < 3){ el.innerHTML = ''; return; }
+  const posCounts = {};
+  const posTeams = {};
+  recent.forEach(p => {
+    const pl = PLAYERS.find(x => x.name === p.name);
+    if (pl) {
+      posCounts[pl.pos] = (posCounts[pl.pos] || 0) + 1;
+      (posTeams[pl.pos] = posTeams[pl.pos] || new Set()).add(TEAM_NAME[p.by] || p.by);
+    }
+  });
+  const runs = Object.entries(posCounts).filter(([pos,c]) => c >= 3 && (pos==='RB'||pos==='WR'||pos==='TE'));
+  if (runs.length === 0){ el.innerHTML = ''; return; }
+  el.innerHTML = runs.map(([pos,c]) =>
+    `<div class="runalert">⚠ ${pos} RUN: ${c} of the last ${recent.length} picks were ${pos} (${[...posTeams[pos]].join(', ')}) — the position is going faster than normal, consider reaching now if you have a target</div>`
+  ).join('');
+}
+
+function renderRecommendations(window_, bestPickCounts, SIM_RUNS){
+  const valued = computeValues();
+  const avail = valued.filter(p => !drafted[p.name]);
+  const recEl = document.getElementById('recPanel');
+  if (avail.length === 0){ recEl.innerHTML = `<div class="empty-feed">Draft complete</div>`; return; }
+
+  if (window_.count === 0){
+    // It's actually your turn -- show actionable recommendations.
+    const byMy = [...avail].sort((a,b) => b.myValue - a.myValue);
+    const byLeague = [...avail].sort((a,b) => b.value - a.value);
+    const top15My = byMy.slice(0,15);
+    const bySafety = [...top15My].filter(p => p.rangePct != null).sort((a,b) => a.rangePct - b.rangePct);
+
+    const picks = [];
+    const used = new Set();
+    function add(tag, why, player){
+      if (!player || used.has(player.name)) return;
+      used.add(player.name);
+      picks.push({ tag, why, player });
+    }
+
+    add('Top pick', 'Best need-adjusted value available right now', byMy[0]);
+    const topPickIsAlsoBestValue = byLeague[0] && byMy[0] && byLeague[0].name === byMy[0].name;
+    add('Best raw value', 'Highest league-wide value, ignoring your roster need', byLeague.find(p=>!used.has(p.name)));
+    const urgent = byMy.find(p => p.needZone === 'urgent' && !used.has(p.name));
+    add('Fills biggest hole', 'Best player at your most urgent position need', urgent);
+    const safe = bySafety.find(p => !used.has(p.name));
+    add('Safest floor', 'Lowest boom/bust risk among your top options', safe);
+
+    recEl.innerHTML = `<div class="rectag" style="color:var(--green);margin-bottom:8px;">🎯 YOUR TURN — pick now</div>` +
+      picks.slice(0,4).map((r,i) => `
+      <div class="rec ${i===0?'main':''}">
+        <div class="rectag">${r.tag}${i===0 && topPickIsAlsoBestValue ? ' &middot; also #1 by raw value' : ''}</div>
+        <div class="recval">${r.player.myValue>=0?'+':''}${r.player.myValue.toFixed(1)}</div>
+        <div class="recname">${r.player.name}<span class="posbadge pb-${r.player.pos}">${r.player.pos}</span></div>
+        <div class="recwhy">${i===1 && topPickIsAlsoBestValue ? 'Next-best by raw value (top pick already claims #1)' : r.why}</div>
+      </div>`).join('');
+    return;
+  }
+
+  // Not your turn yet -- show the forecast instead: who you're likely to actually end up
+  // taking once the intervening picks play out, not just who looks best right now.
+  // Always show up to 4 candidates, even if one dominates every simulated run -- a 100%/0%/0%/0%
+  // split is still worth seeing in full, not collapsed down to a single name.
+  const withCounts = avail.map(p => ({
+    player: p,
+    pct: bestPickCounts.hasOwnProperty(p.name) ? Math.round(100 * bestPickCounts[p.name] / SIM_RUNS) : 0
+  }));
+  const winners = withCounts.filter(r => r.pct > 0).sort((a,b) => b.pct - a.pct);
+  const usedNames = new Set(winners.map(r => r.player.name));
+  const runnersUp = withCounts
+    .filter(r => !usedNames.has(r.player.name))
+    .sort((a,b) => b.player.myValue - a.player.myValue);
+  const ranked = [...winners, ...runnersUp].slice(0, 4);
+
+  recEl.innerHTML = `<div class="rectag" style="color:var(--blue);margin-bottom:8px;">⏳ ${window_.count} pick${window_.count===1?'':'s'} until your turn — forecast</div>` +
+    ranked.map((r,i) => `
+    <div class="rec ${i===0?'main':''}">
+      <div class="rectag">${i===0?'Most likely next pick':(r.pct>0?'Also possible':'Longer shot')}</div>
+      <div class="recval">${r.pct}%</div>
+      <div class="recname">${r.player.name}<span class="posbadge pb-${r.player.pos}">${r.player.pos}</span></div>
+      <div class="recwhy">${r.pct>0 ? 'Chance this is your best available option when your turn comes' : 'Didn\'t win a simulated run this batch, but a real remaining option'}</div>
+    </div>`).join('');
+}
+
+function renderTabs(){
+  const tabsEl = document.getElementById('tabs');
+  const cats = ['ALL','QB','RB','WR','TE','K'];
+  tabsEl.innerHTML = cats.map(c =>
+    `<div class="tab ${c===activeTab?'active':''}" data-tab="${c}">${c}</div>`
+  ).join('');
+  tabsEl.querySelectorAll('.tab').forEach(el => {
+    el.addEventListener('click', () => { activeTab = el.dataset.tab; render(); });
+  });
+
+  const modeEl = document.getElementById('modeTabs');
+  modeEl.innerHTML = `<div class="modetab ${viewMode==='league'?'active':''}" data-mode="league">League Value</div>
+    <div class="modetab ${viewMode==='mine'?'active':''}" data-mode="mine">My Value</div>
+    <div class="modetab ${viewMode==='riskadj'?'active':''}" data-mode="riskadj">Risk-Adj.</div>
+    <div class="modetab ${viewMode==='nextpick'?'active':''}" data-mode="nextpick">Next Pick</div>
+    <div class="modetab ${viewMode==='takenow'?'active':''}" data-mode="takenow">Take-Now</div>`;
+  modeEl.querySelectorAll('.modetab').forEach(el => {
+    el.addEventListener('click', () => { viewMode = el.dataset.mode; render(); });
+  });
+
+  const rosterSel = document.getElementById('rosterTeamSelect');
+  rosterSel.innerHTML = TEAMS.map(t => `<option value="${t.id}" ${t.id===rosterViewTeam?'selected':''}>${t.name}</option>`).join('');
+  rosterSel.addEventListener('change', () => { rosterViewTeam = rosterSel.value; renderRoster(); });
+}
+
+function updateActiveTabClasses(){
+  document.querySelectorAll('#tabs .tab').forEach(el => {
+    el.classList.toggle('active', el.dataset.tab === activeTab);
+  });
+  document.querySelectorAll('#modeTabs .modetab').forEach(el => {
+    el.classList.toggle('active', el.dataset.mode === viewMode);
+  });
+}
+
+function renderNeedBar(){
+  const counts = myCounts();
+  const bar = document.getElementById('needBar');
+  const labels = { urgent: 'NEEDED', neutral: 'FLEX ONLY', discount: 'BENCH ONLY' };
+  bar.innerHTML = ['RB','WR'].map(pos => {
+    const ns = needState(pos, counts);
+    return `<div class="needchip ${ns.zone}"><span class="tag">${pos}</span>${ns.have} drafted &middot; ${labels[ns.zone]}${ns.zone!=='discount' ? ` (${ns.zone==='urgent'?ns.remMin+' guaranteed slot'+(ns.remMin===1?'':'s')+' left':ns.remMax+' flex slot'+(ns.remMax===1?'':'s')+' left'})` : ''}</div>`;
+  }).join('');
+}
+
+function render(){
+  try {
+    renderInner();
+  } catch (e) {
+    const boardEl = document.getElementById('board');
+    if (boardEl) {
+      boardEl.innerHTML = `<div class="row" style="color:var(--red);padding:16px;">
+        Something failed while rendering the board. Error: ${(e && e.message) ? e.message.replace(/</g,'&lt;') : 'unknown'}.
+        Try closing and reopening the tool. If this keeps happening, this exact message is worth sharing so it can be fixed.
+      </div>`;
+    }
+    console.error('render() failed:', e);
+  }
+}
+
+function renderInner(){
+  const valued = computeValues();
+  let pool = activeTab === 'ALL' ? valued : valued.filter(p => p.pos === activeTab);
+  pool = pool.filter(p => showDrafted ? true : !drafted[p.name]);
+  if (searchTerm) pool = pool.filter(p => p.name.toLowerCase().includes(searchTerm));
+
+  const window_ = picksUntilMyNextTurn();
+  const simWin = simulationWindow();
+  const fullAvailable = valued.filter(p => !drafted[p.name]).sort((a,b) => b.value - a.value).slice(0, 120);
+  const forecast = simulateForecast(fullAvailable, simWin.window.teams, 250, simWin.startPick);
+  const survivalCounts = forecast.survivalCount;
+  const bestPickCounts = forecast.bestPickCount;
+  const positionReplacementAvg = forecast.positionReplacementAvg;
+  const SIM_RUNS = 250;
+
+  // Take-Now Score: My Value plus a real urgency premium, based on what you'd ACTUALLY still have
+  // at this position by your next turn (simulated, not just today's 2nd-best) if this player is gone.
+  // If the likely replacement is nearly as good (e.g. two similarly-valued QBs), there's little real
+  // cost to waiting even if his own survival is low -- so no inflated urgency in that case. Urgency
+  // only shows up when BOTH his own survival is low AND the real drop-off to what you'd get instead is large.
+  function takeNowScore(p){
+    const survivalFraction = survivalCounts.hasOwnProperty(p.name) ? survivalCounts[p.name] / SIM_RUNS : 1.0;
+    const replacementValue = (positionReplacementAvg && positionReplacementAvg[p.pos] != null) ? positionReplacementAvg[p.pos] : p.myValue;
+    const gapToReplacement = Math.max(0, p.myValue - replacementValue);
+    const urgencyPremium = (1 - survivalFraction) * gapToReplacement;
+    return p.myValue + urgencyPremium;
+  }
+
+  const sortKey = viewMode === 'mine' ? 'myValue' : (viewMode === 'riskadj' ? 'riskAdjValue' : 'value');
+  if (viewMode === 'nextpick'){
+    pool.sort((a,b) => (bestPickCounts[b.name]||0) - (bestPickCounts[a.name]||0));
+  } else if (viewMode === 'takenow'){
+    pool.sort((a,b) => takeNowScore(b) - takeNowScore(a));
+  } else {
+    pool.sort((a,b) => b[sortKey] - a[sortKey]);
+  }
+
+  const boardEl = document.getElementById('board');
+  const valHeader = viewMode === 'mine' ? 'My Val' : (viewMode === 'riskadj' ? 'Risk-Adj' : (viewMode === 'nextpick' ? 'Next Pick %' : (viewMode === 'takenow' ? 'Take-Now' : 'Value')));
+  let html = `<div class="row hdr"><div>#</div><div>Player</div><div>Fpts</div><div>${valHeader}</div><div>Survives</div><div></div></div>`;
+
+  const showLine = activeTab !== 'ALL' && !searchTerm;
+  const N_starter = showLine ? STARTER_N[activeTab] : null;
+  const N_flex = showLine ? FLEX_N[activeTab] : null;
+  let remainingCount = 0;
+  const byeCounts = myByeCounts();
+  const recentGaps = [];
+
+  pool.forEach((p, i) => {
+    const isDrafted = !!drafted[p.name];
+    if (showLine && !isDrafted){
+      remainingCount++;
+      if (remainingCount === N_starter + 1){
+        html += `<div class="repline">STARTER LINE — replacement is ${activeTab}${N_starter}</div>`;
+      }
+      if (N_flex && remainingCount === N_flex + 1){
+        html += `<div class="repline">FLEX LINE — replacement is ${activeTab}${N_flex}</div>`;
+      }
+    }
+    if (i > 0 && !isDrafted && !drafted[pool[i-1].name]){
+      const gap = pool[i-1][sortKey] - p[sortKey];
+      recentGaps.push(gap);
+      if (recentGaps.length > 5) recentGaps.shift();
+      const trailingAvg = recentGaps.slice(0,-1).reduce((a,b)=>a+b,0) / Math.max(1, recentGaps.length-1);
+      if (gap > 2 && recentGaps.length > 2 && gap > trailingAvg * 1.75){
+        html += `<div class="tierbreak">— tier break —</div>`;
+      }
+    }
+    let shownVal, valSuffix = '';
+    if (viewMode === 'nextpick'){
+      shownVal = isDrafted ? 0 : Math.round(100 * (bestPickCounts[p.name]||0) / SIM_RUNS);
+      valSuffix = '%';
+    } else if (viewMode === 'mine'){
+      shownVal = p.myValue;
+    } else if (viewMode === 'riskadj'){
+      shownVal = p.riskAdjValue;
+    } else if (viewMode === 'takenow'){
+      shownVal = isDrafted ? 0 : Math.round(takeNowScore(p) * 10) / 10;
+    } else {
+      shownVal = p.value;
+    }
+    const valClass = shownVal >= 0 ? 'pos' : 'neg';
+    const needTag = (viewMode === 'mine' && p.needZone) ? `<span class="posbadge pb-${p.needZone==='urgent'?'TE':p.needZone==='discount'?'K':'QB'}" style="margin-left:4px;">${p.needZone==='urgent'?'NEED':p.needZone==='discount'?'BENCH':'FLEX'}</span>` : '';
+    const byeConflict = p.bye && byeCounts[p.bye] >= 2;
+    const byeTag = p.bye ? `<span class="byetag ${byeConflict?'conflict':''}">bye ${p.bye}${byeConflict?' ⚠':''}</span>` : '';
+    const flagTag = p.flagType ? `<span class="flagtag ${p.flagType}" title="${p.flagWhy||''}">${p.flagType==='risk'?'RISK':'OPP'}</span>` : '';
+    let survivalHTML = '';
+    if (!isDrafted && survivalCounts.hasOwnProperty(p.name)){
+      const pct = Math.round(100 * survivalCounts[p.name] / SIM_RUNS);
+      const cls = pct >= 70 ? 'pos' : (pct >= 40 ? '' : 'neg');
+      survivalHTML = `<span class="val ${cls}" style="font-size:11px;">${simWin.window.count===0 ? '—' : pct+'%'}</span>`;
+    }
+    html += `<div class="row ${isDrafted?'drafted':''}">
+      <div class="rank">${i+1}</div>
+      <div class="name">${p.name}<span class="posbadge pb-${p.pos}">${p.pos}</span>${needTag}${flagTag}${byeTag}</div>
+      <div class="fpts">${p.fpts.toFixed(1)}</div>
+      <div class="val ${valClass}">${viewMode==='nextpick' ? shownVal+'%' : (shownVal>=0?'+':'')+shownVal.toFixed(1)}</div>
+      <div>${survivalHTML}</div>
+      <div class="acts">
+        ${isDrafted
+          ? `<span class="byetag" style="margin-right:6px;">${TEAM_NAME[drafted[p.name]] || drafted[p.name]}</span><button class="btn undo" data-undo="${p.name}">Undo</button>`
+          : `<select class="teamsel" data-teamsel="${p.name}"><option value="">Draft →</option>${TEAMS.map(t=>`<option value="${t.id}">${t.name}</option>`).join('')}</select>`}
+      </div>
+    </div>`;
+  });
+  boardEl.innerHTML = html;
+
+  boardEl.querySelectorAll('[data-teamsel]').forEach(sel => {
+    sel.addEventListener('change', () => {
+      if (sel.value) draftPlayer(sel.dataset.teamsel, sel.value);
+    });
+  });
+  boardEl.querySelectorAll('[data-undo]').forEach(btn => {
+    btn.addEventListener('click', () => undoPlayer(btn.dataset.undo));
+  });
+
+  renderRoster();
+  renderFeed();
+  renderNeedBar();
+  renderRecommendations(window_, bestPickCounts, SIM_RUNS);
+  renderRunAlert();
+  renderTurnBanner();
+  updateActiveTabClasses();
+  renderRadar(fullAvailable, survivalCounts, SIM_RUNS, simWin.window.count);
+  document.getElementById('subtitle').textContent =
+    `${PLAYERS.length - Object.keys(drafted).length} of ${PLAYERS.length} players still available`;
+}
+
+function renderRoster(){
+  const rosterEl = document.getElementById('roster');
+  const teamOfInterest = rosterViewTeam;
+  const picks = pickOrder.filter(p => p.by === teamOfInterest).map(p => PLAYERS.find(x => x.name === p.name));
+  const slots = ROSTER_SLOTS.map(s => ({ slot: s, filled: null }));
+  picks.forEach(pl => {
+    if (!pl) return;
+    let slot = slots.find(s => s.slot === pl.pos && !s.filled);
+    if (!slot && (pl.pos === 'RB' || pl.pos === 'WR' || pl.pos === 'TE')){
+      slot = slots.find(s => s.slot === 'FLEX' && !s.filled);
+    }
+    if (slot) slot.filled = pl;
+    else slots.push({ slot: 'BN', filled: pl });
+  });
+
+  const byeCounts = {};
+  slots.forEach(s => { if (s.filled && s.filled.bye) byeCounts[s.filled.bye] = (byeCounts[s.filled.bye]||0) + 1; });
+
+  rosterEl.innerHTML = slots.map(s => {
+    const pl = s.filled;
+    const name = pl ? pl.name : 'empty';
+    const byeHTML = (pl && pl.bye) ? `<span class="byetag ${byeCounts[pl.bye]>=2?'conflict':''}">bye ${pl.bye}${byeCounts[pl.bye]>=2?' \u26a0':''}</span>` : '';
+    return `<div class="slot"><span class="slotlabel">${s.slot}</span><span class="slotname ${pl?'':'empty'}">${name}${byeHTML}</span></div>`;
+  }).join('');
+}
+
+function renderFeed(){
+  const feedEl = document.getElementById('feed');
+  if (pickOrder.length === 0){
+    feedEl.innerHTML = `<div class="empty-feed">No picks yet</div>`;
+    return;
+  }
+  feedEl.innerHTML = pickOrder.slice().reverse().slice(0,12).map(p =>
+    `<div class="feeditem"><span>${p.name}</span><span class="feedwho ${p.by===MY_TEAM?'mine':'opp'}">${TEAM_NAME[p.by] || p.by}</span></div>`
+  ).join('');
+}
+
+async function saveState(){
+  try {
+    await window.storage.set(STORAGE_KEY, JSON.stringify({ drafted, pickOrder }));
+  } catch(e){}
+}
+
+async function loadState(){
+  try {
+    const res = await window.storage.get(STORAGE_KEY);
+    if (res && res.value){
+      const parsed = JSON.parse(res.value);
+      drafted = parsed.drafted || {};
+      pickOrder = parsed.pickOrder || [];
+    }
+  } catch(e){}
+}
+
+function draftPlayer(name, by){
+  drafted[name] = by;
+  pickOrder.push({ name, by });
+  saveState();
+  render();
+}
+
+function undoPlayer(name){
+  delete drafted[name];
+  pickOrder = pickOrder.filter(p => p.name !== name);
+  saveState();
+  render();
+}
+
+document.getElementById('search').addEventListener('input', (e) => {
+  searchTerm = e.target.value.toLowerCase();
+  render();
+});
+document.getElementById('draftedToggle').addEventListener('click', () => {
+  showDrafted = !showDrafted;
+  const btn = document.getElementById('draftedToggle');
+  btn.textContent = showDrafted ? 'Showing Drafted' : 'Show Drafted';
+  btn.classList.toggle('on', showDrafted);
+  render();
+});
+document.getElementById('radarToggle').addEventListener('click', () => {
+  showRadar = !showRadar;
+  const btn = document.getElementById('radarToggle');
+  btn.textContent = showRadar ? 'Hide Radar' : 'Risk Radar';
+  btn.classList.toggle('on', showRadar);
+  render();
+});
+document.getElementById('resetBtn').addEventListener('click', async () => {
+  drafted = {};
+  pickOrder = [];
+  PRESET_KEEPERS.forEach(k => { drafted[k.name] = k.team; pickOrder.push({ name: k.name, by: k.team, isPreset: true }); });
+  await saveState();
+  render();
+});
+
+function reconcilePresetKeepers(){
+  const currentPairs = new Set(PRESET_KEEPERS.map(k => k.name + '|' + k.team));
+  const existingPresetPairs = new Set(pickOrder.filter(p => p.isPreset).map(p => p.name + '|' + p.by));
+  let changed = false;
+
+  // Remove preset entries that no longer match the current keeper list (e.g. a keeper correction).
+  // Only ever touches entries flagged isPreset -- real live picks are never affected.
+  pickOrder = pickOrder.filter(p => {
+    if (!p.isPreset) return true;
+    if (!currentPairs.has(p.name + '|' + p.by)){
+      delete drafted[p.name];
+      changed = true;
+      return false;
+    }
+    return true;
+  });
+
+  // Add any current presets that are missing, but never overwrite a name that's already
+  // genuinely drafted (e.g. if it happens to have been picked live in the meantime).
+  PRESET_KEEPERS.forEach(k => {
+    const key = k.name + '|' + k.team;
+    if (!existingPresetPairs.has(key) && !drafted[k.name]){
+      drafted[k.name] = k.team;
+      pickOrder.push({ name: k.name, by: k.team, isPreset: true });
+      changed = true;
+    }
+  });
+
+  return changed;
+}
+
+(async function init(){
+  try {
+    await loadState();
+    if (pickOrder.length === 0){
+      PRESET_KEEPERS.forEach(k => { drafted[k.name] = k.team; pickOrder.push({ name: k.name, by: k.team, isPreset: true }); });
+      await saveState();
+    } else {
+      const changed = reconcilePresetKeepers();
+      if (changed) await saveState();
+    }
+    renderTabs();
+    render();
+  } catch (e) {
+    const boardEl = document.getElementById('board');
+    if (boardEl) {
+      boardEl.innerHTML = `<div class="row" style="color:var(--red);padding:16px;">
+        The draft tool failed to load. Error: ${(e && e.message) ? e.message.replace(/</g,'&lt;') : 'unknown'}.
+        Try closing and reopening. If this keeps happening, this exact message is worth sharing so it can be fixed.
+      </div>`;
+    }
+    console.error('init() failed:', e);
+  }
+})();
+</script>
+</body>
+</html>
