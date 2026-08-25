@@ -1791,19 +1791,9 @@
     "bye": 10
   },
   {
-    "name": "Garrett Wilson",
-    "pos": "WR",
-    "fpts": 193.1,
-    "trueFpts": 194.7,
-    "high": 243.7,
-    "low": 187.2,
-    "team": "NYJ",
-    "bye": 13
-  },
-  {
     "name": "Tetairoa McMillan",
     "pos": "WR",
-    "fpts": 192.9,
+    "fpts": 193.1,
     "trueFpts": 193.1,
     "high": 223.7,
     "low": 193.5,
@@ -1811,19 +1801,19 @@
     "bye": 5
   },
   {
-    "name": "Ladd McConkey",
+    "name": "Garrett Wilson",
     "pos": "WR",
-    "fpts": 191.7,
-    "trueFpts": 180.7,
-    "high": 209.2,
-    "low": 181,
-    "team": "LAC",
-    "bye": 7
+    "fpts": 192.9,
+    "trueFpts": 194.7,
+    "high": 243.7,
+    "low": 187.2,
+    "team": "NYJ",
+    "bye": 13
   },
   {
     "name": "Tee Higgins",
     "pos": "WR",
-    "fpts": 187.9,
+    "fpts": 191.7,
     "trueFpts": 186.3,
     "high": 206.5,
     "low": 181.5,
@@ -1831,19 +1821,19 @@
     "bye": 6
   },
   {
-    "name": "Jaylen Waddle",
+    "name": "Ladd McConkey",
     "pos": "WR",
-    "fpts": 186.3,
-    "trueFpts": 173.1,
-    "high": 207.8,
-    "low": 164.1,
-    "team": "DEN",
-    "bye": 10
+    "fpts": 187.9,
+    "trueFpts": 180.7,
+    "high": 209.2,
+    "low": 181,
+    "team": "LAC",
+    "bye": 7
   },
   {
     "name": "Emeka Egbuka",
     "pos": "WR",
-    "fpts": 185,
+    "fpts": 186.3,
     "trueFpts": 191.7,
     "high": 222.2,
     "low": 188.6,
@@ -1851,19 +1841,19 @@
     "bye": 10
   },
   {
-    "name": "DJ Moore",
+    "name": "Jaylen Waddle",
     "pos": "WR",
-    "fpts": 180.7,
-    "trueFpts": 173.8,
-    "high": 206.2,
-    "low": 161.7,
-    "team": "BUF",
-    "bye": 7
+    "fpts": 185,
+    "trueFpts": 173.1,
+    "high": 207.8,
+    "low": 164.1,
+    "team": "DEN",
+    "bye": 10
   },
   {
     "name": "Terry McLaurin",
     "pos": "WR",
-    "fpts": 175.4,
+    "fpts": 180.7,
     "trueFpts": 175.4,
     "high": 196.7,
     "low": 176.2,
@@ -1871,19 +1861,19 @@
     "bye": 7
   },
   {
-    "name": "Christian Watson",
+    "name": "DJ Moore",
     "pos": "WR",
-    "fpts": 173.9,
-    "trueFpts": 166.4,
-    "high": 201.5,
-    "low": 159.1,
-    "team": "GB",
-    "bye": 11
+    "fpts": 175.4,
+    "trueFpts": 173.8,
+    "high": 206.2,
+    "low": 161.7,
+    "team": "BUF",
+    "bye": 7
   },
   {
     "name": "Davante Adams",
     "pos": "WR",
-    "fpts": 173.8,
+    "fpts": 173.9,
     "trueFpts": 187.9,
     "high": 220.5,
     "low": 172.4,
@@ -1891,19 +1881,19 @@
     "bye": 11
   },
   {
-    "name": "Luther Burden III",
+    "name": "Christian Watson",
     "pos": "WR",
-    "fpts": 173.1,
-    "trueFpts": 171.7,
-    "high": 203.2,
-    "low": 167.2,
-    "team": "CHI",
-    "bye": 10
+    "fpts": 173.8,
+    "trueFpts": 166.4,
+    "high": 201.5,
+    "low": 159.1,
+    "team": "GB",
+    "bye": 11
   },
   {
     "name": "Jameson Williams",
     "pos": "WR",
-    "fpts": 171.7,
+    "fpts": 173.1,
     "trueFpts": 185,
     "high": 220.2,
     "low": 176.4,
@@ -1911,24 +1901,34 @@
     "bye": 6
   },
   {
-    "name": "Marvin Harrison Jr.",
+    "name": "Luther Burden III",
     "pos": "WR",
-    "fpts": 170.1,
-    "trueFpts": 163.6,
-    "high": 194.9,
-    "low": 158.7,
-    "team": "ARI",
-    "bye": 14
+    "fpts": 171.7,
+    "trueFpts": 171.7,
+    "high": 203.2,
+    "low": 167.2,
+    "team": "CHI",
+    "bye": 10
   },
   {
     "name": "Rome Odunze",
     "pos": "WR",
-    "fpts": 166.4,
+    "fpts": 170.1,
     "trueFpts": 173.9,
     "high": 200.2,
     "low": 162.2,
     "team": "CHI",
     "bye": 10
+  },
+  {
+    "name": "Marvin Harrison Jr.",
+    "pos": "WR",
+    "fpts": 166.4,
+    "trueFpts": 163.6,
+    "high": 194.9,
+    "low": 158.7,
+    "team": "ARI",
+    "bye": 14
   },
   {
     "name": "Parker Washington",
@@ -1941,14 +1941,14 @@
     "bye": 7
   },
   {
-    "name": "Carnell Tate",
+    "name": "Mike Evans",
     "pos": "WR",
     "fpts": 164,
-    "trueFpts": 145.8,
-    "high": 181.8,
-    "low": 121.6,
-    "team": "TEN",
-    "bye": 9
+    "trueFpts": 170.1,
+    "high": 205.7,
+    "low": 159.1,
+    "team": "SF",
+    "bye": 8
   },
   {
     "name": "Brian Thomas Jr.",
@@ -1961,29 +1961,19 @@
     "bye": 7
   },
   {
-    "name": "Mike Evans",
+    "name": "Carnell Tate",
     "pos": "WR",
     "fpts": 163.1,
-    "trueFpts": 170.1,
-    "high": 205.7,
-    "low": 159.1,
-    "team": "SF",
-    "bye": 8
-  },
-  {
-    "name": "Michael Pittman Jr.",
-    "pos": "WR",
-    "fpts": 153.1,
-    "trueFpts": 150.1,
-    "high": 195.9,
-    "low": 134.2,
-    "team": "PIT",
+    "trueFpts": 145.8,
+    "high": 181.8,
+    "low": 121.6,
+    "team": "TEN",
     "bye": 9
   },
   {
     "name": "DK Metcalf",
     "pos": "WR",
-    "fpts": 152.1,
+    "fpts": 153.1,
     "trueFpts": 163.1,
     "high": 196,
     "low": 155.1,
@@ -1991,19 +1981,19 @@
     "bye": 9
   },
   {
-    "name": "Chris Godwin Jr.",
+    "name": "Michael Pittman Jr.",
     "pos": "WR",
-    "fpts": 150.1,
-    "trueFpts": 141.8,
-    "high": 175.8,
-    "low": 130.9,
-    "team": "TB",
-    "bye": 10
+    "fpts": 152.1,
+    "trueFpts": 150.1,
+    "high": 195.9,
+    "low": 134.2,
+    "team": "PIT",
+    "bye": 9
   },
   {
     "name": "Courtland Sutton",
     "pos": "WR",
-    "fpts": 145.8,
+    "fpts": 150.1,
     "trueFpts": 164.9,
     "high": 192,
     "low": 158.7,
@@ -2011,24 +2001,34 @@
     "bye": 10
   },
   {
-    "name": "Michael Wilson",
+    "name": "Chris Godwin Jr.",
     "pos": "WR",
-    "fpts": 144.8,
-    "trueFpts": 142.8,
-    "high": 173,
-    "low": 139.7,
-    "team": "ARI",
-    "bye": 14
+    "fpts": 145.8,
+    "trueFpts": 141.8,
+    "high": 175.8,
+    "low": 130.9,
+    "team": "TB",
+    "bye": 10
   },
   {
     "name": "Alec Pierce",
     "pos": "WR",
-    "fpts": 144.6,
+    "fpts": 144.8,
     "trueFpts": 164,
     "high": 180.3,
     "low": 154.4,
     "team": "IND",
     "bye": 13
+  },
+  {
+    "name": "Michael Wilson",
+    "pos": "WR",
+    "fpts": 144.6,
+    "trueFpts": 142.8,
+    "high": 173,
+    "low": 139.7,
+    "team": "ARI",
+    "bye": 14
   },
   {
     "name": "Quentin Johnston",
@@ -2041,9 +2041,19 @@
     "bye": 7
   },
   {
-    "name": "Josh Downs",
+    "name": "Jordan Addison",
     "pos": "WR",
     "fpts": 142.8,
+    "trueFpts": 141.3,
+    "high": 163.9,
+    "low": 137.6,
+    "team": "MIN",
+    "bye": 6
+  },
+  {
+    "name": "Josh Downs",
+    "pos": "WR",
+    "fpts": 141.8,
     "trueFpts": 129.3,
     "high": 163.1,
     "low": 121.7,
@@ -2053,7 +2063,7 @@
   {
     "name": "Stefon Diggs",
     "pos": "WR",
-    "fpts": 141.8,
+    "fpts": 141.3,
     "trueFpts": 132.7,
     "high": 171.1,
     "low": 124.5,
@@ -2061,24 +2071,14 @@
     "bye": 7
   },
   {
-    "name": "Jordan Addison",
-    "pos": "WR",
-    "fpts": 141.3,
-    "trueFpts": 141.3,
-    "high": 163.9,
-    "low": 137.6,
-    "team": "MIN",
-    "bye": 6
-  },
-  {
-    "name": "Jordyn Tyson",
+    "name": "Wan'Dale Robinson",
     "pos": "WR",
     "fpts": 139.9,
-    "trueFpts": 87.9,
-    "high": 83.1,
-    "low": 82.9,
-    "team": "NO",
-    "bye": 8
+    "trueFpts": 139.1,
+    "high": 176.1,
+    "low": 134,
+    "team": "TEN",
+    "bye": 9
   },
   {
     "name": "Deebo Samuel Sr.",
@@ -2093,19 +2093,9 @@
     "flagWhy": "Age/role concerns experts are pricing in"
   },
   {
-    "name": "Jakobi Meyers",
-    "pos": "WR",
-    "fpts": 139.1,
-    "trueFpts": 144.6,
-    "high": 177.7,
-    "low": 135.1,
-    "team": "JAC",
-    "bye": 7
-  },
-  {
     "name": "Jayden Reed",
     "pos": "WR",
-    "fpts": 133.5,
+    "fpts": 139.1,
     "trueFpts": 144.8,
     "high": 182.9,
     "low": 132.6,
@@ -2113,24 +2103,34 @@
     "bye": 11
   },
   {
-    "name": "Makai Lemon",
+    "name": "Jordyn Tyson",
     "pos": "WR",
-    "fpts": 132.7,
-    "trueFpts": 124.5,
-    "high": 128.5,
-    "low": 112.4,
-    "team": "PHI",
-    "bye": 10
+    "fpts": 133.5,
+    "trueFpts": 87.9,
+    "high": 83.1,
+    "low": 82.9,
+    "team": "NO",
+    "bye": 8
   },
   {
     "name": "Xavier Worthy",
     "pos": "WR",
-    "fpts": 131.8,
+    "fpts": 132.7,
     "trueFpts": 139.9,
     "high": 167.2,
     "low": 118.6,
     "team": "KC",
     "bye": 5
+  },
+  {
+    "name": "Makai Lemon",
+    "pos": "WR",
+    "fpts": 131.8,
+    "trueFpts": 124.5,
+    "high": 128.5,
+    "low": 112.4,
+    "team": "PHI",
+    "bye": 10
   },
   {
     "name": "Romeo Doubs",
@@ -2143,9 +2143,19 @@
     "bye": 11
   },
   {
-    "name": "De'Zhaun Stribling",
+    "name": "Matthew Golden",
     "pos": "WR",
     "fpts": 129.6,
+    "trueFpts": 133.5,
+    "high": 155.1,
+    "low": 116.9,
+    "team": "GB",
+    "bye": 11
+  },
+  {
+    "name": "De'Zhaun Stribling",
+    "pos": "WR",
+    "fpts": 129.3,
     "trueFpts": 125.8,
     "high": 129.7,
     "low": 113.3,
@@ -2155,22 +2165,12 @@
   {
     "name": "Khalil Shakir",
     "pos": "WR",
-    "fpts": 129.3,
+    "fpts": 128.9,
     "trueFpts": 130.1,
     "high": 171.4,
     "low": 112.8,
     "team": "BUF",
     "bye": 7
-  },
-  {
-    "name": "Matthew Golden",
-    "pos": "WR",
-    "fpts": 128.9,
-    "trueFpts": 133.5,
-    "high": 155.1,
-    "low": 116.9,
-    "team": "GB",
-    "bye": 11
   },
   {
     "name": "Jalen Coker",
@@ -2193,22 +2193,22 @@
     "bye": 11
   },
   {
-    "name": "Denzel Boston",
+    "name": "KC Concepcion",
     "pos": "WR",
     "fpts": 124.8,
-    "trueFpts": 121.7,
-    "high": 120.7,
-    "low": 114.5,
+    "trueFpts": 129.6,
+    "high": 126.1,
+    "low": 123,
     "team": "CLE",
     "bye": 11
   },
   {
-    "name": "KC Concepcion",
+    "name": "Denzel Boston",
     "pos": "WR",
     "fpts": 124.5,
-    "trueFpts": 129.6,
-    "high": 126.1,
-    "low": 123,
+    "trueFpts": 121.7,
+    "high": 120.7,
+    "low": 114.5,
     "team": "CLE",
     "bye": 11
   },
@@ -2235,29 +2235,19 @@
     "bye": 13
   },
   {
-    "name": "Jauan Jennings",
+    "name": "Dontayvion Wicks",
     "pos": "WR",
     "fpts": 118.1,
-    "trueFpts": 109.7,
-    "high": 119.4,
-    "low": 92.5,
-    "team": "MIN",
-    "bye": 6
-  },
-  {
-    "name": "Omar Cooper Jr.",
-    "pos": "WR",
-    "fpts": 117.2,
-    "trueFpts": 75.8,
-    "high": 83.3,
-    "low": 59.4,
-    "team": "NYJ",
-    "bye": 13
+    "trueFpts": 88.2,
+    "high": 88.5,
+    "low": 88.5,
+    "team": "PHI",
+    "bye": 10
   },
   {
     "name": "Jerry Jeudy",
     "pos": "WR",
-    "fpts": 114.9,
+    "fpts": 117.2,
     "trueFpts": 118.1,
     "high": 114.3,
     "low": 113.4,
@@ -2265,9 +2255,29 @@
     "bye": 11
   },
   {
-    "name": "Adonai Mitchell",
+    "name": "Keenan Allen",
+    "pos": "WR",
+    "fpts": 114.9,
+    "trueFpts": 112.5,
+    "high": 117.3,
+    "low": 98.6,
+    "team": "IND",
+    "bye": 13
+  },
+  {
+    "name": "Jalen McMillan",
     "pos": "WR",
     "fpts": 112.5,
+    "trueFpts": 110.5,
+    "high": 109,
+    "low": 101.3,
+    "team": "TB",
+    "bye": 10
+  },
+  {
+    "name": "Adonai Mitchell",
+    "pos": "WR",
+    "fpts": 110.5,
     "trueFpts": 94,
     "high": 105.1,
     "low": 74.9,
@@ -2275,34 +2285,24 @@
     "bye": 13
   },
   {
-    "name": "Troy Franklin",
+    "name": "Jakobi Meyers",
     "pos": "WR",
-    "fpts": 110.5,
-    "trueFpts": 79,
-    "high": 96.2,
-    "low": 52,
-    "team": "DEN",
-    "bye": 10
+    "fpts": 109.7,
+    "trueFpts": 144.6,
+    "high": 177.7,
+    "low": 135.1,
+    "team": "JAC",
+    "bye": 7
   },
   {
     "name": "Hollywood Brown",
     "pos": "WR",
-    "fpts": 109.7,
+    "fpts": 108.6,
     "trueFpts": 67,
     "high": 91.1,
     "low": 35.4,
     "team": "PHI",
     "bye": 10
-  },
-  {
-    "name": "Wan'Dale Robinson",
-    "pos": "WR",
-    "fpts": 108.6,
-    "trueFpts": 139.1,
-    "high": 176.1,
-    "low": 134,
-    "team": "TEN",
-    "bye": 9
   },
   {
     "name": "Ja'Kobi Lane",
@@ -2317,14 +2317,14 @@
     "flagWhy": "Model likes the talent more than experts trust the target share"
   },
   {
-    "name": "Tre' Harris",
+    "name": "Calvin Ridley",
     "pos": "WR",
     "fpts": 102.1,
-    "trueFpts": 72.5,
-    "high": 72.6,
-    "low": 72.6,
-    "team": "LAC",
-    "bye": 7
+    "trueFpts": 124.8,
+    "high": 123.3,
+    "low": 115.4,
+    "team": "TEN",
+    "bye": 9
   },
   {
     "name": "Cooper Kupp",
@@ -2339,29 +2339,49 @@
     "flagWhy": "Age + new-team fit uncertainty"
   },
   {
-    "name": "Kayshon Boutte",
+    "name": "Troy Franklin",
     "pos": "WR",
     "fpts": 94,
-    "trueFpts": 92.5,
-    "high": 102.6,
-    "low": 73.8,
-    "team": "NE",
-    "bye": 11
+    "trueFpts": 79,
+    "high": 96.2,
+    "low": 52,
+    "team": "DEN",
+    "bye": 10
   },
   {
-    "name": "Jalen McMillan",
+    "name": "Malik Washington",
     "pos": "WR",
     "fpts": 93.2,
-    "trueFpts": 110.5,
-    "high": 109,
-    "low": 101.3,
-    "team": "TB",
-    "bye": 10
+    "trueFpts": 89.2,
+    "high": 93.5,
+    "low": 74.8,
+    "team": "MIA",
+    "bye": 6
+  },
+  {
+    "name": "Tre' Harris",
+    "pos": "WR",
+    "fpts": 92.5,
+    "trueFpts": 72.5,
+    "high": 72.6,
+    "low": 72.6,
+    "team": "LAC",
+    "bye": 7
+  },
+  {
+    "name": "Jauan Jennings",
+    "pos": "WR",
+    "fpts": 91.1,
+    "trueFpts": 109.7,
+    "high": 119.4,
+    "low": 92.5,
+    "team": "MIN",
+    "bye": 6
   },
   {
     "name": "Ryan Flournoy",
     "pos": "WR",
-    "fpts": 92.5,
+    "fpts": 91,
     "trueFpts": 72.3,
     "high": 72.4,
     "low": 72.4,
@@ -2371,19 +2391,17 @@
   {
     "name": "Jaylin Noel",
     "pos": "WR",
-    "fpts": 91.1,
+    "fpts": 89.2,
     "trueFpts": 91.1,
     "high": 90.8,
     "low": 82.8,
     "team": "HOU",
-    "bye": 8,
-    "flagType": "opportunity",
-    "flagWhy": "Rookie -- similar opportunity story ahead of the raw projection"
+    "bye": 8
   },
   {
     "name": "Jalen Nailor",
     "pos": "WR",
-    "fpts": 91,
+    "fpts": 88.6,
     "trueFpts": 108.6,
     "high": 106.8,
     "low": 101.7,
@@ -2391,19 +2409,29 @@
     "bye": 13
   },
   {
-    "name": "Malik Washington",
+    "name": "Keon Coleman",
     "pos": "WR",
-    "fpts": 89.2,
-    "trueFpts": 89.2,
-    "high": 93.5,
-    "low": 74.8,
-    "team": "MIA",
-    "bye": 6
+    "fpts": 88.2,
+    "trueFpts": 62.4,
+    "high": 63.2,
+    "low": 63.2,
+    "team": "BUF",
+    "bye": 7
+  },
+  {
+    "name": "Travis Hunter",
+    "pos": "WR",
+    "fpts": 87.9,
+    "trueFpts": 91,
+    "high": 92.3,
+    "low": 92.3,
+    "team": "JAC",
+    "bye": 7
   },
   {
     "name": "Isaac TeSlaa",
     "pos": "WR",
-    "fpts": 88.6,
+    "fpts": 87.5,
     "trueFpts": 72.4,
     "high": 74.7,
     "low": 61.8,
@@ -2413,42 +2441,12 @@
   {
     "name": "Rashod Bateman",
     "pos": "WR",
-    "fpts": 88.2,
+    "fpts": 86.4,
     "trueFpts": 114.9,
     "high": 117.4,
     "low": 104.2,
     "team": "BAL",
     "bye": 13
-  },
-  {
-    "name": "Keenan Allen",
-    "pos": "WR",
-    "fpts": 87.9,
-    "trueFpts": 112.5,
-    "high": 117.3,
-    "low": 98.6,
-    "team": "IND",
-    "bye": 13
-  },
-  {
-    "name": "Travis Hunter",
-    "pos": "WR",
-    "fpts": 87.5,
-    "trueFpts": 91,
-    "high": 92.3,
-    "low": 92.3,
-    "team": "JAC",
-    "bye": 7
-  },
-  {
-    "name": "Chimere Dike",
-    "pos": "WR",
-    "fpts": 86.4,
-    "trueFpts": 65.3,
-    "high": 83.9,
-    "low": 42.7,
-    "team": "TEN",
-    "bye": 9
   },
   {
     "name": "Darnell Mooney",
@@ -2471,19 +2469,29 @@
     "bye": 9
   },
   {
-    "name": "Dontayvion Wicks",
+    "name": "Omar Cooper Jr.",
     "pos": "WR",
     "fpts": 79.3,
-    "trueFpts": 88.2,
-    "high": 88.5,
-    "low": 88.5,
-    "team": "PHI",
-    "bye": 10
+    "trueFpts": 75.8,
+    "high": 83.3,
+    "low": 59.4,
+    "team": "NYJ",
+    "bye": 13
+  },
+  {
+    "name": "Chimere Dike",
+    "pos": "WR",
+    "fpts": 79,
+    "trueFpts": 65.3,
+    "high": 83.9,
+    "low": 42.7,
+    "team": "TEN",
+    "bye": 9
   },
   {
     "name": "Devaughn Vele",
     "pos": "WR",
-    "fpts": 79,
+    "fpts": 77.1,
     "trueFpts": 102.1,
     "high": 97.9,
     "low": 97.6,
@@ -2491,49 +2499,9 @@
     "bye": 8
   },
   {
-    "name": "Zachariah Branch",
-    "pos": "WR",
-    "fpts": 77.1,
-    "trueFpts": 64.6,
-    "high": 66.8,
-    "low": 66.8,
-    "team": "ATL",
-    "bye": 11
-  },
-  {
-    "name": "Keon Coleman",
-    "pos": "WR",
-    "fpts": 75.8,
-    "trueFpts": 62.4,
-    "high": 63.2,
-    "low": 63.2,
-    "team": "BUF",
-    "bye": 7
-  },
-  {
-    "name": "Jack Bech",
-    "pos": "WR",
-    "fpts": 75.8,
-    "trueFpts": 52,
-    "high": 52.1,
-    "low": 52.1,
-    "team": "LV",
-    "bye": 13
-  },
-  {
-    "name": "Germie Bernard",
-    "pos": "WR",
-    "fpts": 74.9,
-    "trueFpts": 88.6,
-    "high": 89,
-    "low": 80.6,
-    "team": "PIT",
-    "bye": 9
-  },
-  {
     "name": "Christian Kirk",
     "pos": "WR",
-    "fpts": 74.2,
+    "fpts": 75.8,
     "trueFpts": 73.2,
     "high": 96.3,
     "low": 41.5,
@@ -2541,19 +2509,29 @@
     "bye": 8
   },
   {
-    "name": "Antonio Williams",
+    "name": "Zachariah Branch",
     "pos": "WR",
-    "fpts": 73.2,
-    "trueFpts": 86.4,
-    "high": 93.7,
-    "low": 69.6,
-    "team": "WAS",
-    "bye": 7
+    "fpts": 75.8,
+    "trueFpts": 64.6,
+    "high": 66.8,
+    "low": 66.8,
+    "team": "ATL",
+    "bye": 11
+  },
+  {
+    "name": "Marvin Mims Jr.",
+    "pos": "WR",
+    "fpts": 74.9,
+    "trueFpts": 54.8,
+    "high": 57.9,
+    "low": 57.9,
+    "team": "DEN",
+    "bye": 10
   },
   {
     "name": "Tory Horton",
     "pos": "WR",
-    "fpts": 72.5,
+    "fpts": 74.2,
     "trueFpts": 79.3,
     "high": 90.2,
     "low": 59,
@@ -2561,24 +2539,44 @@
     "bye": 11
   },
   {
-    "name": "Elijah Sarratt",
+    "name": "Jack Bech",
+    "pos": "WR",
+    "fpts": 73.2,
+    "trueFpts": 52,
+    "high": 52.1,
+    "low": 52.1,
+    "team": "LV",
+    "bye": 13
+  },
+  {
+    "name": "Antonio Williams",
+    "pos": "WR",
+    "fpts": 72.5,
+    "trueFpts": 86.4,
+    "high": 93.7,
+    "low": 69.6,
+    "team": "WAS",
+    "bye": 7
+  },
+  {
+    "name": "Germie Bernard",
     "pos": "WR",
     "fpts": 72.4,
+    "trueFpts": 88.6,
+    "high": 89,
+    "low": 80.6,
+    "team": "PIT",
+    "bye": 9
+  },
+  {
+    "name": "Elijah Sarratt",
+    "pos": "WR",
+    "fpts": 72.3,
     "trueFpts": 28,
     "high": 28.1,
     "low": 28.1,
     "team": "BAL",
     "bye": 13
-  },
-  {
-    "name": "Marvin Mims Jr.",
-    "pos": "WR",
-    "fpts": 72.3,
-    "trueFpts": 54.8,
-    "high": 57.9,
-    "low": 57.9,
-    "team": "DEN",
-    "bye": 10
   },
   {
     "name": "Malachi Fields",
@@ -2601,14 +2599,14 @@
     "bye": 11
   },
   {
-    "name": "Darius Slayton",
+    "name": "Tyquan Thornton",
     "pos": "WR",
     "fpts": 67.6,
-    "trueFpts": 82.3,
-    "high": 80.9,
-    "low": 75.1,
-    "team": "NYG",
-    "bye": 8
+    "trueFpts": 80.1,
+    "high": 85.7,
+    "low": 66.4,
+    "team": "KC",
+    "bye": 5
   },
   {
     "name": "Xavier Legette",
@@ -2621,24 +2619,24 @@
     "bye": 5
   },
   {
-    "name": "Ted Hurst III",
+    "name": "Darius Slayton",
     "pos": "WR",
     "fpts": 66.8,
-    "trueFpts": 68.5,
-    "high": 69.7,
-    "low": 56.9,
-    "team": "TB",
-    "bye": 10
+    "trueFpts": 82.3,
+    "high": 80.9,
+    "low": 75.1,
+    "team": "NYG",
+    "bye": 8
   },
   {
-    "name": "Tyquan Thornton",
+    "name": "Kayshon Boutte",
     "pos": "WR",
     "fpts": 65.6,
-    "trueFpts": 80.1,
-    "high": 85.7,
-    "low": 66.4,
-    "team": "KC",
-    "bye": 5
+    "trueFpts": 92.5,
+    "high": 102.6,
+    "low": 73.8,
+    "team": "HOU",
+    "bye": 8
   },
   {
     "name": "Mack Hollins",
@@ -2651,11 +2649,14 @@
     "bye": 11
   },
   {
-    "name": "Chris Brazzell II",
+    "name": "Ted Hurst III",
     "pos": "WR",
     "fpts": 64.6,
-    "team": "CAR",
-    "bye": 5
+    "trueFpts": 68.5,
+    "high": 69.7,
+    "low": 56.9,
+    "team": "TB",
+    "bye": 10
   },
   {
     "name": "Chris Bell",
@@ -2680,19 +2681,36 @@
     "flagWhy": "Rookie -- experts see real role/target upside the model has not priced in yet"
   },
   {
-    "name": "Calvin Ridley",
+    "name": "Chris Brazzell II",
     "pos": "WR",
     "fpts": 56.8,
-    "trueFpts": 124.8,
-    "high": 123.3,
-    "low": 115.4,
-    "team": "TEN",
-    "bye": 9
+    "team": "CAR",
+    "bye": 5
+  },
+  {
+    "name": "Caleb Douglas",
+    "pos": "WR",
+    "fpts": 55.3,
+    "trueFpts": 93.2,
+    "high": 93.5,
+    "low": 93.5,
+    "team": "MIA",
+    "bye": 6
+  },
+  {
+    "name": "Cyrus Allen",
+    "pos": "WR",
+    "fpts": 54.8,
+    "trueFpts": 35.7,
+    "high": 35.9,
+    "low": 35.9,
+    "team": "KC",
+    "bye": 5
   },
   {
     "name": "Cedric Tillman",
     "pos": "WR",
-    "fpts": 55.3,
+    "fpts": 54.5,
     "trueFpts": 45.3,
     "high": 68.2,
     "low": 13.6,
@@ -2700,19 +2718,19 @@
     "bye": 11
   },
   {
-    "name": "Luke McCaffrey",
+    "name": "Andrei Iosivas",
     "pos": "WR",
-    "fpts": 54.8,
-    "trueFpts": 42.7,
-    "high": 60.2,
-    "low": 18.9,
-    "team": "WAS",
-    "bye": 7
+    "fpts": 54.4,
+    "trueFpts": 65.6,
+    "high": 69.9,
+    "low": 51.5,
+    "team": "CIN",
+    "bye": 6
   },
   {
     "name": "Isaiah Bond",
     "pos": "WR",
-    "fpts": 54.5,
+    "fpts": 52.9,
     "trueFpts": 25.5,
     "high": 25.6,
     "low": 25.6,
@@ -2720,9 +2738,19 @@
     "bye": 11
   },
   {
+    "name": "Luke McCaffrey",
+    "pos": "WR",
+    "fpts": 52,
+    "trueFpts": 42.7,
+    "high": 60.2,
+    "low": 18.9,
+    "team": "WAS",
+    "bye": 7
+  },
+  {
     "name": "Skyler Bell",
     "pos": "WR",
-    "fpts": 54.4,
+    "fpts": 50,
     "trueFpts": 23.3,
     "high": 23.4,
     "low": 23.4,
@@ -2732,36 +2760,263 @@
   {
     "name": "Brandon Aiyuk",
     "pos": "WR",
-    "fpts": 52.9,
+    "fpts": 49.5,
     "team": "SF",
     "bye": 8
   },
   {
-    "name": "Caleb Douglas",
+    "name": "Zavion Thomas",
     "pos": "WR",
-    "fpts": 52,
-    "trueFpts": 93.2,
-    "high": 93.5,
-    "low": 93.5,
-    "team": "MIA",
-    "bye": 6
+    "fpts": 49,
+    "trueFpts": 28.6,
+    "high": 29.9,
+    "low": 29.9,
+    "team": "CHI",
+    "bye": 10
+  },
+  {
+    "name": "Malik Benson",
+    "pos": "WR",
+    "fpts": 48.4,
+    "trueFpts": 67.6,
+    "high": 79.9,
+    "low": 45.8,
+    "team": "LV",
+    "bye": 13
   },
   {
     "name": "Tyreek Hill",
     "pos": "WR",
-    "fpts": 50,
+    "fpts": 48.2,
     "team": "FA",
     "bye": null
   },
   {
-    "name": "Andrei Iosivas",
+    "name": "Konata Mumpfield",
     "pos": "WR",
-    "fpts": 49.5,
-    "trueFpts": 65.6,
-    "high": 69.9,
-    "low": 51.5,
-    "team": "CIN",
+    "fpts": 46.1,
+    "trueFpts": 24.2,
+    "high": 24.3,
+    "low": 24.3,
+    "team": "LAR",
+    "bye": 11
+  },
+  {
+    "name": "Brenen Thompson",
+    "pos": "WR",
+    "fpts": 45.3,
+    "trueFpts": 22.7,
+    "high": 22.8,
+    "low": 22.8,
+    "team": "LAC",
+    "bye": 7
+  },
+  {
+    "name": "Nick Westbrook-Ikhine",
+    "pos": "WR",
+    "fpts": 44.3,
+    "trueFpts": 14.1,
+    "high": 14.2,
+    "low": 14.2,
+    "team": "IND",
+    "bye": 13
+  },
+  {
+    "name": "Devontez Walker",
+    "pos": "WR",
+    "fpts": 42.7,
+    "trueFpts": 36.6,
+    "high": 36.7,
+    "low": 36.7,
+    "team": "BAL",
+    "bye": 13
+  },
+  {
+    "name": "Bryce Lance",
+    "pos": "WR",
+    "fpts": 38.9,
+    "trueFpts": 31.9,
+    "high": 32,
+    "low": 32,
+    "team": "NO",
+    "bye": 8
+  },
+  {
+    "name": "Olamide Zaccheaus",
+    "pos": "WR",
+    "fpts": 38.8,
+    "trueFpts": 54.4,
+    "high": 67.1,
+    "low": 33.1,
+    "team": "ATL",
+    "bye": 11
+  },
+  {
+    "name": "Tez Johnson",
+    "pos": "WR",
+    "fpts": 37.2,
+    "trueFpts": 18,
+    "high": 18.2,
+    "low": 18.2,
+    "team": "TB",
+    "bye": 10
+  },
+  {
+    "name": "Jalen Tolbert",
+    "pos": "WR",
+    "fpts": 36.8,
+    "trueFpts": 68.5,
+    "high": 68.7,
+    "low": 68.7,
+    "team": "MIA",
     "bye": 6
+  },
+  {
+    "name": "Jahan Dotson",
+    "pos": "WR",
+    "fpts": 36.6,
+    "trueFpts": 74.9,
+    "high": 75.2,
+    "low": 75.2,
+    "team": "ATL",
+    "bye": 11
+  },
+  {
+    "name": "Odell Beckham Jr.",
+    "pos": "WR",
+    "fpts": 35.7,
+    "trueFpts": 19.4,
+    "high": 19.5,
+    "low": 19.5,
+    "team": "NYG",
+    "bye": 8
+  },
+  {
+    "name": "Calvin Austin III",
+    "pos": "WR",
+    "fpts": 33.7,
+    "trueFpts": 49,
+    "high": 69.8,
+    "low": 19.7,
+    "team": "NYG",
+    "bye": 8
+  },
+  {
+    "name": "Treylon Burks",
+    "pos": "WR",
+    "fpts": 32.4,
+    "trueFpts": 37.2,
+    "high": 37.4,
+    "low": 37.4,
+    "team": "WAS",
+    "bye": 7
+  },
+  {
+    "name": "KaVontae Turpin",
+    "pos": "WR",
+    "fpts": 31.9,
+    "trueFpts": 54.5,
+    "high": 57.7,
+    "low": 57.7,
+    "team": "DAL",
+    "bye": 14
+  },
+  {
+    "name": "Kalif Raymond",
+    "pos": "WR",
+    "fpts": 28.6,
+    "trueFpts": 36.8,
+    "high": 38.4,
+    "low": 38.4,
+    "team": "CHI",
+    "bye": 10
+  },
+  {
+    "name": "Jalen Royals",
+    "pos": "WR",
+    "fpts": 28.4,
+    "trueFpts": 14.9,
+    "high": 15,
+    "low": 15,
+    "team": "KC",
+    "bye": 5
+  },
+  {
+    "name": "Savion Williams",
+    "pos": "WR",
+    "fpts": 28,
+    "trueFpts": 49.5,
+    "high": 50.4,
+    "low": 50.4,
+    "team": "GB",
+    "bye": 11
+  },
+  {
+    "name": "Kendrick Bourne",
+    "pos": "WR",
+    "fpts": 26.1,
+    "trueFpts": 38.9,
+    "high": 38.9,
+    "low": 38.9,
+    "team": "ARI",
+    "bye": 14
+  },
+  {
+    "name": "Kevin Coleman Jr.",
+    "pos": "WR",
+    "fpts": 25.6,
+    "trueFpts": 26.1,
+    "high": 26.1,
+    "low": 26.1,
+    "team": "MIA",
+    "bye": 6
+  },
+  {
+    "name": "DeMario Douglas",
+    "pos": "WR",
+    "fpts": 25.5,
+    "trueFpts": 50,
+    "high": 50.1,
+    "low": 50.1,
+    "team": "NE",
+    "bye": 11
+  },
+  {
+    "name": "Jaylin Lane",
+    "pos": "WR",
+    "fpts": 24.2,
+    "trueFpts": 28.4,
+    "high": 31.1,
+    "low": 31.1,
+    "team": "WAS",
+    "bye": 7
+  },
+  {
+    "name": "John Metchie III",
+    "pos": "WR",
+    "fpts": 23.3,
+    "team": "CAR",
+    "bye": 5
+  },
+  {
+    "name": "Roman Wilson",
+    "pos": "WR",
+    "fpts": 22.9,
+    "trueFpts": 22.9,
+    "high": 23,
+    "low": 23,
+    "team": "PIT",
+    "bye": 9
+  },
+  {
+    "name": "Jordan Whittington",
+    "pos": "WR",
+    "fpts": 22.7,
+    "trueFpts": 25.6,
+    "high": 26,
+    "low": 26,
+    "team": "LAR",
+    "bye": 11
   },
   {
     "name": "Brock Bowers",
